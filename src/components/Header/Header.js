@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState, useEffect } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -13,11 +14,24 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
+import { useCookies } from 'react-cookie';
+import getUserInfo from '../../api/getUserInfo'
 
 
 const Header = () => {
     const [anchorElUser, setAnchorElUser] = React.useState(null);
-    const settings = ["Profilo", "Logout"];
+    const [nome, setNome] = useState("");
+    const [cognome, setCognome] = useState("");
+    const settings = ["Logout"];
+    const [cookies, setCookie] = useCookies();
+
+    useEffect(()=>{
+        getUserInfo(cookies.token)
+            .then(alunno => {
+                setNome(alunno.desNome);
+                setCognome(alunno.desCognome);
+            })
+    })
 
     const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
@@ -26,6 +40,11 @@ const Header = () => {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
+
+    const handleLogout = () => {
+        setCookie("token", "", { path: "/" });
+        window.location.href = "/login";
+    }
 
     return (
         <AppBar position="fixed">
@@ -38,7 +57,7 @@ const Header = () => {
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Typography variant="h6"
                             component="div" sx={{ flexGrow: 1 }}>
-                            MARIO ROSSI
+                            {`${nome} ${cognome}`}
                         </Typography>
                     </Box>
                     <Tooltip title="Account" sx={{ml: '20px'}}>
@@ -66,7 +85,7 @@ const Header = () => {
                     >
                         {settings.map((setting) => (
                             <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                <Typography textAlign="center">{setting}</Typography>
+                                <Typography textAlign="center" onClick={handleLogout}>{setting}</Typography>
                             </MenuItem>
                         ))}
                     </Menu>

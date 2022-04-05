@@ -2,6 +2,8 @@ import Header from "../../Header/Header";
 import Menu from "../../Menu/Menu";
 import { useEffect } from "react";
 import { useCookies } from "react-cookie";
+import { Box } from "@mui/material";
+import { CssBaseline } from "@mui/material";
 
 export default function Riepilogo() {
     const [cookies, setCookie] = useCookies();
@@ -11,10 +13,9 @@ export default function Riepilogo() {
             window.location.href = "/login"
         }
     }, [])
-    return(
-        <>
+    return (
+        <Box sx={{ display: 'flex' }}>
             <Header />
-            <Menu />
-        </>
+        </Box>
     );
 }

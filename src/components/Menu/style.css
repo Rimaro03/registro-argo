@@ -1,0 +1,6 @@
+Box{
+    display: "flex";
+    position: "fixed";
+    padding-top: "70px";
+    border-right: "1px solid #ccc"
+}

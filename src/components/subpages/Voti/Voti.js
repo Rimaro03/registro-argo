@@ -9,6 +9,7 @@ import { Typography } from "@mui/material";
 import getVoti from "../../../api/getVoti";
 import { red, green } from '@mui/material/colors';
 import { borderRadius } from "@mui/system";
+import BookmarkIcon from '@mui/icons-material/Bookmark';
 
 export default function Voti() {
     const [cookies, setCookie] = useCookies();
@@ -36,6 +37,11 @@ export default function Voti() {
                 sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3, width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth / 5}px` }}
             >
                 <Toolbar />
+                <Typography
+                    variant="h4"
+                >
+                    Voti
+                </Typography>
                 <List>
                     {voti.map((item, index) => {
                         let voto = item.codVoto;

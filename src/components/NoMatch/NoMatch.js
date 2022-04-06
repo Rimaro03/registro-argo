@@ -1,11 +1,9 @@
-import Header from "../../Header/Header";
-import Menu from "../../Menu/Menu";
 import { useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { Box } from "@mui/material";
 import { CssBaseline } from "@mui/material";
 
-export default function Riepilogo() {
+export default function NoMatch() {
     const [cookies, setCookie] = useCookies();
 
     useEffect(() => {
@@ -15,8 +13,7 @@ export default function Riepilogo() {
     }, [])
     return (
         <Box sx={{ display: 'flex' }}>
-            <Header />
-            <Menu />
+            <h1>404 PAGE NOT FOUND</h1>
         </Box>
     );
 }

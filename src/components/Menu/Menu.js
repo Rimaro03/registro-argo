@@ -3,39 +3,43 @@ import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
 import MailIcon from "@mui/icons-material/Mail";
 import Toolbar from "@mui/material/Toolbar";
-import { Container } from "@mui/material"
+import { subPages } from "./menuItems";
+import { List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
 
-const drawerWidth = 240;
+const drawerWidth = 300;
 
 export default function Menu() {
-  const items = ["Riepilogo", "Voti", "Argomenti"];
-
-  const drawer = (
-    <div>
-      <List>
-        {items.map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>
-              <MailIcon />
-            </ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-      </List>
-    </div>
-  );
-
-
 
   return (
-    <Container>
-      {drawer}
-    </Container>
+    <>
+      <CssBaseline />
+      <Drawer
+        sx={{
+          width: 240,
+          flexShrink: 0,
+          '& .MuiDrawer-paper': {
+            width: drawerWidth,
+            boxSizing: 'border-box',
+          },
+        }}
+        variant="permanent"
+        anchor="left"
+      >
+        <Toolbar />
+        <Divider />
+        <List>
+          {subPages.map((page, index) => (
+            <ListItem button onClick={()=>{window.location.href=`/${page.name.toLocaleLowerCase()}`}} key={index}>
+              <ListItemIcon>
+                {page.icon}
+              </ListItemIcon>
+              <ListItemText primary={page.name} />
+            </ListItem>
+          ))}
+        </List>
+      </Drawer>
+    </>
   );
 }

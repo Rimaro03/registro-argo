@@ -6,9 +6,10 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
 import { useCookies } from 'react-cookie';
 import getUserInfo from '../../api/getUserInfo'
+import { Container, Tooltip, Avatar, MenuItem } from '@mui/material';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const Header = () => {
     const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -38,74 +39,61 @@ const Header = () => {
         window.location.href = "/login";
     }
 
+    const drawerWidth = 300;
+
     return (
-        <AppBar position="absolute">
+        <AppBar position="fixed">
             <Toolbar
-                sx={{
-                    pr: '24px', // keep right padding when drawer closed
-                }}
+                sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px` }}
             >
-                <Container maxWidth="100%" sx={{ margin: 0, width: "100%" }}>
-                    <Toolbar disableGutters>
-                        <IconButton
-                            edge="start"
-                            color="inherit"
-                            aria-label="open drawer"
-                            onClick={toggleDrawer}
-                            sx={{
-                                marginRight: '36px',
-                                ...(open && { display: 'none' }),
-                            }}
-                        >
-                            <MenuIcon />
-                        </IconButton>
+            <Container maxWidth="100%" sx={{ margin: 0, width: "100%" }}>
+                <Toolbar disableGutters>
+                    <Typography variant="h5"
+                        component="div" noWrap sx={{ flexGrow: 1 }}>
+                        Registro Elettronico
+                    </Typography>
 
-                        <Typography variant="h5"
-                            component="div" noWrap sx={{ flexGrow: 1 }}>
-                            REGISTRO ELETTRONICO
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Typography variant="h6"
+                            component="div" sx={{ flexGrow: 1 }}>
+                            {`${nome} ${cognome}`}
                         </Typography>
+                    </Box>
 
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <Typography variant="h6"
-                                component="div" sx={{ flexGrow: 1 }}>
-                                {`${nome} ${cognome}`}
-                            </Typography>
-                        </Box>
+                    <Tooltip title="Account" sx={{ ml: '20px' }}>
+                        <IconButton onClick={handleOpenUserMenu}>
+                            <Avatar alt="Mario Rossi">
+                                <AccountCircleIcon />
+                            </Avatar>
+                        </IconButton>
+                    </Tooltip>
 
-                        <Tooltip title="Account" sx={{ ml: '20px' }}>
-                            <IconButton onClick={handleOpenUserMenu}>
-                                <Avatar alt="Mario Rossi">
-                                    <AccountCircleIcon />
-                                </Avatar>
-                            </IconButton>
-                        </Tooltip>
-
-                        <Menu
-                            sx={{ mt: '45px' }}
-                            id="menu-appbar"
-                            anchorEl={anchorElUser}
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            open={Boolean(anchorElUser)}
-                            onClose={handleCloseUserMenu}
-                        >
-                            {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                    <Typography textAlign="center" onClick={handleLogout}>{setting}</Typography>
-                                </MenuItem>
-                            ))}
-                        </Menu>
-                    </Toolbar>
-                </Container>
-            </Toolbar>
-        </AppBar>
+                    <Menu
+                        sx={{ mt: '45px' }}
+                        id="menu-appbar"
+                        anchorEl={anchorElUser}
+                        anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                        }}
+                        keepMounted
+                        transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                        }}
+                        open={Boolean(anchorElUser)}
+                        onClose={handleCloseUserMenu}
+                    >
+                        {settings.map((setting) => (
+                            <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                                <Typography textAlign="center" onClick={handleLogout}>{setting}</Typography>
+                            </MenuItem>
+                        ))}
+                    </Menu>
+                </Toolbar>
+            </Container>
+        </Toolbar>
+        </AppBar >
     );
 };
 export default Header;

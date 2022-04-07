@@ -3,13 +3,10 @@ import Menu from "../../Menu/Menu";
 import React, { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { Avatar, Box, List, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
-import { CssBaseline } from "@mui/material";
 import { Toolbar } from "@mui/material";
 import { Typography } from "@mui/material";
 import getVoti from "../../../api/getVoti";
 import { red, green } from '@mui/material/colors';
-import { borderRadius } from "@mui/system";
-import BookmarkIcon from '@mui/icons-material/Bookmark';
 
 export default function Voti() {
     const [cookies, setCookie] = useCookies();

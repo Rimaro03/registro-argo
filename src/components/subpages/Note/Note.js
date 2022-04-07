@@ -5,21 +5,22 @@ import { useCookies } from "react-cookie";
 import { Avatar, Box, List, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
 import { Toolbar } from "@mui/material";
 import { Typography } from "@mui/material";
-import getVoti from "../../../api/getVoti";
-import { red, green } from '@mui/material/colors';
+import getNote from "../../../api/getNote";
+import { red } from '@mui/material/colors';
+import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 
-export default function Voti() {
+export default function Note() {
     const [cookies] = useCookies();
-    const [voti, setVoti] = useState([]);
+    const [note, setNote] = useState([]);
 
     useEffect(() => {
         if (!cookies.token) {
             window.location.href = "/login"
         }
 
-        getVoti(cookies.token)
-            .then(votiArray => {
-                setVoti(votiArray);
+        getNote(cookies.token)
+            .then(noteArray => {
+                setNote(noteArray);
             })
     }, [])
 
@@ -37,30 +38,18 @@ export default function Voti() {
                 <Typography
                     variant="h4"
                 >
-                    Voti
+                    Note disciplinari
                 </Typography>
                 <List>
-                    {voti.map((item, index) => {
+                    {note.map((item, index) => {
                         const docente = item.docente.replace("(", "").replace(")", "").replace("Prof. ", "")
-                        let voto = item.codVoto;
-                        if (voto.includes("10")) {
-                            voto = Number(item.codVoto.slice(0, 2))
-                        }
-                        else {
-                            voto = Number(item.codVoto.slice(0, 1))
-                        }
-
-                        let descrizione = "Nessuna descrizione"
-                        if(item.desProva){
-                            descrizione = item.desProva
-                        }
-                        let avatarColor = "";
-                        voto < 6 ? avatarColor = red[500] : avatarColor = green[500];
 
                         return (
                             <ListItem key={index} sx={{ border: "1px solid #ccc", borderRadius: "5px", margin: 1 }}>
                                 <ListItemAvatar>
-                                    <Avatar sx={{ bgcolor: avatarColor }}>{voto}</Avatar>
+                                    <Avatar sx={{ bgcolor: red[500] }}>
+                                        <PriorityHighIcon />
+                                    </Avatar>
                                 </ListItemAvatar>
                                 <ListItemText
                                     primary={
@@ -69,7 +58,7 @@ export default function Voti() {
                                                 sx={{ display: 'inline', fontWeight: 600 }}
                                                 component="span"
                                             >
-                                                {item.desMateria}
+                                                {docente}
                                             </Typography>
                                         </React.Fragment>
                                     }
@@ -82,10 +71,10 @@ export default function Voti() {
                                                 color="text.primary"
 
                                             >
-                                                {descrizione}
+                                                {item.desNota}
                                             </Typography>
                                             <br />
-                                            {docente} | {item.datGiorno}
+                                            {item.datNota}
                                         </React.Fragment>
                                     }
                                 />

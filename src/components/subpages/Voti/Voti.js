@@ -8,6 +8,8 @@ import { Typography } from "@mui/material";
 import getVoti from "../../../api/getVoti";
 import { red, green } from '@mui/material/colors';
 
+
+//TODO: GRAFICO VOTI
 export default function Voti() {
     const [cookies] = useCookies();
     const [voti, setVoti] = useState([]);

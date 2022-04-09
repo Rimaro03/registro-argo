@@ -1,7 +1,7 @@
 const axios = require("axios").default;
 const config = require("../config.json")
 
-const getScrutinio = async(token) => {
+const checkScrutini = async (token) => {
     const options = {
         headers: {
             'Access-Control-Allow-Origin': '*',
@@ -20,19 +20,27 @@ const getScrutinio = async(token) => {
     }
 
     try {
-        let scrutinioGrezzo = await axios.get(`${config.argoBasicURL}/votiscrutinio`, options)
-            .then(res => res.data);
-        let scrutinio = []
-        let id = 0;
-        scrutinioGrezzo.forEach(scrutinioArray => {
-            scrutinio.push({id: id, Materia: scrutinioArray.desMateria, Voto: scrutinioArray.votoOrale.codVoto})
-            id++;
-        })
-        return scrutinio;
+        let periodiObj = {
+            primo: false,
+            secondo: false,
+        }
+
+        let periodi = await axios.get(`${config.argoBasicURL}/periodiclasse`, options)
+            .then(res => res.data.dati);
+        
+        if(periodi[0].flgVotiVisibili){
+            periodiObj.primo = true
+        }
+        if(periodi[1].flgVotiVisibili){
+            periodiObj.secondo = true;
+        }
+
+        return periodiObj;
     }
     catch (err) {
         return false;
     }
+
 }
 
-export default getScrutinio;
+export default checkScrutini;

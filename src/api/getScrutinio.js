@@ -1,7 +1,7 @@
 const axios = require("axios").default;
 const config = require("../config.json")
 
-const getScrutinio = async(token) => {
+const getScrutinio = async (token) => {
     const options = {
         headers: {
             'Access-Control-Allow-Origin': '*',
@@ -25,7 +25,7 @@ const getScrutinio = async(token) => {
         let scrutinio = []
         let id = 0;
         scrutinioGrezzo.forEach(scrutinioArray => {
-            scrutinio.push({id: id, Materia: scrutinioArray.desMateria, Voto: scrutinioArray.votoOrale.codVoto})
+            scrutinio.push({ id: id, Materia: scrutinioArray.desMateria, Voto: scrutinioArray.votoOrale.codVoto })
             id++;
         })
         return scrutinio;

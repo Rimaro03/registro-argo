@@ -52,6 +52,11 @@ export default function Compiti() {
                         if(dataOggi == item.datCompiti){
                             color = "#ffcc00"
                         }
+                        else{
+                            if(new Date(item.datCompiti) < new Date(dataOggi)){
+                                color = "#AAAAAA"
+                            }
+                        }
                         return ( 
                             <ListItem key={index} sx={{ border: "1px solid #ccc", borderRadius: "5px", margin: 1 }}>
                                 <ListItemAvatar>

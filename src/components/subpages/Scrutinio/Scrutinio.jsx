@@ -6,11 +6,19 @@ import Menu from "../../Menu/Menu";
 import { useCookies } from "react-cookie";
 import { Box, Typography } from "@mui/material";
 import checkScrutini from "../../../api/checkScrutini";
+import {
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+  Radar,
+} from "recharts";
 
 export default function Scrutinio() {
   const [cookies] = useCookies();
   const [scrutinio, setScrutinio] = useState([]);
   const [scrutini, setScrutini] = useState({});
+  const [chartData, setChartData] = useState([]);
 
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
@@ -35,10 +43,12 @@ export default function Scrutinio() {
 
     getScrutinio(cookies.token).then((scrutinioArray) => {
       setScrutinio(scrutinioArray);
+      let datas = scrutinioArray.map(item => item)
+      datas.splice(datas.findIndex(item => item.Materia === "Religione Cattolica"), 1)
+      setChartData(datas)
     });
 
     checkScrutini(cookies.token).then((scrutiniObj) => {
-      console.log(scrutiniObj);
       setScrutini(scrutiniObj);
     });
   }, []);
@@ -48,8 +58,8 @@ export default function Scrutinio() {
       return (
         <>
           <Typography variant="h4">Primo scrutinio</Typography>
-          <div style={{ height: 685, width: "100%" }}>
-            <DataGrid rows={scrutinio} columns={columns} hideFooter={true} />
+          <div style={{ height: 682, width: tableWidth }}>
+            <DataGrid rows={scrutinio} columns={columns} hideFooter={true} disableColumnMenu={true}/>
           </div>
         </>
       );
@@ -63,7 +73,7 @@ export default function Scrutinio() {
           <Typography variant="h4" sx={{ marginTop: 10 }}>
             Scrutinio Finale
           </Typography>
-          <div style={{ height: 685, width: "100%" }}>
+          <div style={{ height: 685 }}>
             <DataGrid rows={scrutinio} columns={columns} hideFooter={true} />
           </div>
         </>
@@ -72,6 +82,7 @@ export default function Scrutinio() {
   };
 
   const drawerWidth = 300;
+  const tableWidth = 750;
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -83,20 +94,26 @@ export default function Scrutinio() {
           flexGrow: 1,
           bgcolor: "background.default",
           p: 3,
-          width: `calc(100% - ${drawerWidth}px)`,
+          width: `calc(100% - ${drawerWidth}px - ${tableWidth}px)`,
           ml: `${drawerWidth / 5}px`,
           mt: 10,
         }}
       >
-        <Box
-          sx={{
-            flexGrow: 1,
-          }}
-        >
-          {loadPrimoScrutinio()}
-          {loadSecondoScrutinio()}
-        </Box>
+        {loadPrimoScrutinio()}
+        {loadSecondoScrutinio()}
       </Box>
+        <RadarChart outerRadius={150} width={tableWidth} height={700} data={chartData}>
+          <PolarGrid />
+          <PolarAngleAxis dataKey="Materia" />
+          <PolarRadiusAxis angle={30} domain={[0, 10]}/>
+          <Radar
+            name="Alunno"
+            dataKey="Voto"
+            stroke="#8884d8"
+            fill="#8884d8"
+            fillOpacity={0.6}
+          />
+        </RadarChart>
     </Box>
   );
 }

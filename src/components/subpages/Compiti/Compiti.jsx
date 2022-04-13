@@ -6,6 +6,8 @@ import Menu from "../../Menu/Menu";
 import {
   Avatar,
   Box,
+  FormControlLabel,
+  FormGroup,
   List,
   ListItem,
   ListItemAvatar,
@@ -38,13 +40,16 @@ export default function Compiti() {
 
     if (!value) {
       let newCompiti = [];
+      let month = new Date().getMonth() + 1;
+      if (month < 10) {
+        month = `0${month}`;
+      }
       const current = new Date(
-        `${new Date().getFullYear} - ${
-          new Date().getMonth() + 1
-        } - ${new Date().getDate()}`
+        `${new Date().getFullYear()}-${month}-${new Date().getDate()}`
       );
+      console.log(current);
       compiti.forEach((compito) => {
-        if (new Date(compito.datCompito) > current) {
+        if (new Date(compito.datCompiti) > current) {
           newCompiti.push(compito);
         }
       });
@@ -80,11 +85,18 @@ export default function Compiti() {
         <Toolbar />
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Typography variant="h4">Compiti assegnati</Typography>
-          <Switch
-            checked={checked}
-            onChange={handleChange}
-            inputProps={{ "aria-label": "controlled" }}
-          />
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={checked}
+                  onChange={handleChange}
+                  inputProps={{ "aria-label": "controlled" }}
+                />
+              }
+              label="Mostra tutti"
+            />
+          </FormGroup>
         </Box>
         <List>
           {compiti.map((item, index) => {

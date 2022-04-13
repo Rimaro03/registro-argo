@@ -20,7 +20,7 @@ import { green } from "@mui/material/colors";
 export default function Compiti() {
   const [cookies] = useCookies();
   const [compiti, setCompiti] = useState([]);
-  const [checked, setChecked] = React.useState(true);
+  const [checked, setChecked] = useState(true);
 
   useEffect(() => {
     if (!cookies.token) {
@@ -33,7 +33,27 @@ export default function Compiti() {
   }, []);
 
   const handleChange = (event) => {
-    setChecked(event.target.checked);
+    const value = event.target.checked;
+    setChecked(value);
+
+    if (!value) {
+      let newCompiti = [];
+      const current = new Date(
+        `${new Date().getFullYear} - ${
+          new Date().getMonth() + 1
+        } - ${new Date().getDate()}`
+      );
+      compiti.forEach((compito) => {
+        if (new Date(compito.datCompito) > current) {
+          newCompiti.push(compito);
+        }
+      });
+      setCompiti(newCompiti);
+    } else {
+      getCompiti(cookies.token).then((compitiArray) => {
+        setCompiti(compitiArray);
+      });
+    }
   };
 
   const drawerWidth = 300;
@@ -58,13 +78,12 @@ export default function Compiti() {
         }}
       >
         <Toolbar />
-        <Box sx={{display: "flex", justifyContent:"space-between"}}>
+        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Typography variant="h4">Compiti assegnati</Typography>
           <Switch
             checked={checked}
             onChange={handleChange}
             inputProps={{ "aria-label": "controlled" }}
-            defaultChecked
           />
         </Box>
         <List>

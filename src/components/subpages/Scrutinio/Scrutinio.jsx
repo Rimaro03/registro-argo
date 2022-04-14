@@ -4,7 +4,17 @@ import getScrutinio from "../../../api/getScrutinio";
 import Header from "../../Header/Header";
 import Menu from "../../Menu/Menu";
 import { useCookies } from "react-cookie";
-import { Box, Typography } from "@mui/material";
+import {
+  Box,
+  TableContainer,
+  Typography,
+  Paper,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+} from "@mui/material";
 import checkScrutini from "../../../api/checkScrutini";
 import {
   RadarChart,
@@ -20,22 +30,6 @@ export default function Scrutinio() {
   const [scrutini, setScrutini] = useState({});
   const [chartData, setChartData] = useState([]);
 
-  const columns = [
-    { field: "id", headerName: "ID", width: 90 },
-    {
-      field: "Materia",
-      headerName: "Materia",
-      width: 150,
-      editable: false,
-    },
-    {
-      field: "Voto",
-      headerName: "Voto",
-      width: 150,
-      editable: false,
-    },
-  ];
-
   useEffect(() => {
     if (!cookies.token) {
       window.location.href = "/login";
@@ -43,9 +37,16 @@ export default function Scrutinio() {
 
     getScrutinio(cookies.token).then((scrutinioArray) => {
       setScrutinio(scrutinioArray);
-      let datas = scrutinioArray.map(item => item)
-      datas.splice(datas.findIndex(item => item.Materia === "Religione Cattolica"), 1)
-      setChartData(datas)
+      let datas = scrutinioArray.map((item) => item);
+      datas.splice(
+        datas.findIndex((item) => item.Materia === "Religione Cattolica"),
+        1
+      );
+      datas.splice(
+        datas.findIndex((item) => item.Materia === "Comportamento"),
+        1
+      );
+      setChartData(datas);
     });
 
     checkScrutini(cookies.token).then((scrutiniObj) => {
@@ -53,20 +54,53 @@ export default function Scrutinio() {
     });
   }, []);
 
+  const createData = (materia, voto, assenze) => {
+    return { materia, voto, assenze };
+  };
+
+  let datiPrimoScrutinio = [];
+  scrutinio.forEach((voto) => {
+    datiPrimoScrutinio.push(createData(voto.Materia, voto.Voto, voto.Assenze));
+  });
+  console.log(scrutinio);
+
+  const colonne = ["Materia", "Voto", "Assenze"];
+
   const loadPrimoScrutinio = () => {
     if (scrutini.primo) {
       return (
         <>
           <Typography variant="h4">Primo scrutinio</Typography>
-          <div style={{ height: 682, width: tableWidth }}>
-            <DataGrid rows={scrutinio} columns={columns} hideFooter={true} disableColumnMenu={true}/>
-          </div>
+          <TableContainer component={Paper} sx={{marginTop: 2}}>
+            <Table sx={{ minwidth: 680 }} aria-label="Voti">
+              <TableHead>
+                <TableRow>
+                  {colonne.map((colonna, index) => (
+                    <TableCell key={index} align="left">
+                      <strong>{colonna}</strong>
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {datiPrimoScrutinio.map((row, index) => (
+                  <TableRow key={index}>
+                    <TableCell component="th" scope="row">
+                      {row.materia}
+                    </TableCell>
+                    <TableCell align="left">{row.voto}</TableCell>
+                    <TableCell align="left">{row.assenze}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </>
       );
     }
   };
 
-  const loadSecondoScrutinio = () => {
+  /*const loadSecondoScrutinio = () => {
     if (scrutini.secondo) {
       return (
         <>
@@ -79,7 +113,7 @@ export default function Scrutinio() {
         </>
       );
     }
-  };
+  };*/
 
   const drawerWidth = 300;
   const tableWidth = 750;
@@ -100,20 +134,24 @@ export default function Scrutinio() {
         }}
       >
         {loadPrimoScrutinio()}
-        {loadSecondoScrutinio()}
       </Box>
-        <RadarChart outerRadius={150} width={tableWidth} height={700} data={chartData}>
-          <PolarGrid />
-          <PolarAngleAxis dataKey="Materia" />
-          <PolarRadiusAxis angle={30} domain={[0, 10]}/>
-          <Radar
-            name="Alunno"
-            dataKey="Voto"
-            stroke="#8884d8"
-            fill="#8884d8"
-            fillOpacity={0.6}
-          />
-        </RadarChart>
+      <RadarChart
+        outerRadius={150}
+        width={tableWidth}
+        height={700}
+        data={chartData}
+      >
+        <PolarGrid />
+        <PolarAngleAxis dataKey="Materia" />
+        <PolarRadiusAxis angle={30} domain={[0, 10]} />
+        <Radar
+          name="Alunno"
+          dataKey="Voto"
+          stroke="#8884d8"
+          fill="#8884d8"
+          fillOpacity={0.6}
+        />
+      </RadarChart>
     </Box>
   );
 }

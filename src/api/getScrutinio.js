@@ -25,7 +25,7 @@ const getScrutinio = async (token) => {
         let scrutinio = []
         let id = 0;
         scrutinioGrezzo.forEach(scrutinioArray => {
-            scrutinio.push({ id: id, Materia: scrutinioArray.desMateria, Voto: scrutinioArray.votoOrale.codVoto })
+            scrutinio.push({ id: id, Materia: scrutinioArray.desMateria, Voto: scrutinioArray.votoOrale.codVoto, Assenze: scrutinioArray.assenze })
             id++;
         })
         return scrutinio;

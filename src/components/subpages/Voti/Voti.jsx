@@ -10,12 +10,16 @@ import {
   ListItemAvatar,
   ListItemText,
   Divider,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
 import { Toolbar } from "@mui/material";
 import { Typography, Grid, Paper } from "@mui/material";
 import getVoti from "../../../api/getVoti";
 import { red, green, blue } from "@mui/material/colors";
 import ClassIcon from "@mui/icons-material/Class";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 //TODO: GRAFICO VOTI
 export default function Voti() {
@@ -88,108 +92,116 @@ export default function Voti() {
               votiList.push(voto.decValore);
             });
             return (
-              <div key={index}>
-                <List>
-                  <ListItem>
-                    <ListItemAvatar>
-                      <Avatar >
-                        <ClassIcon />
-                      </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={
-                        <React.Fragment>
-                          <Typography variant="h6" component="span">
-                            {item.materia}
-                          </Typography>
-                        </React.Fragment>
-                      }
-                      secondary={
-                        <React.Fragment>
-                          <Typography component="span">{`Media: ${calcMedia(
-                            votiList
-                          )}`}</Typography>
-                        </React.Fragment>
-                      }
-                    />
-                  </ListItem>
-                </List>
-                <Divider />
-                <List sx={{ marginBottom: 2 }}>
-                  {item.voti.map((item, index) => {
-                    const docente = item.docente
-                      .replace("(", "")
-                      .replace(")", "")
-                      .replace("Prof. ", "");
-
-                    let voto = item.decValore;
-
-                    let tipologia = "";
-                    if (item.codVotoPratico === "S") {
-                      tipologia = "Compito Scritto";
-                    } else {
-                      if (item.codVotoPratico === "N") {
-                        tipologia = "Interrogazione orale";
-                      } else {
-                        tipologia = "Prova pratica";
-                      }
-                    }
-
-                    let descrizione = "Nessuna descrizione";
-                    if (item.desProva) {
-                      descrizione = item.desProva;
-                    }
-
-                    let avatarColor = "";
-                    voto < 6
-                      ? (avatarColor = red[500])
-                      : (avatarColor = green[500]);
-
-                    return (
-                      <ListItem
-                        key={index}
-                        sx={{
-                          border: "1px solid #ccc",
-                          borderRadius: "5px",
-                          margin: 1,
-                        }}
-                      >
-                        <ListItemAvatar>
-                          <Avatar sx={{ bgcolor: avatarColor }}>
-                            {item.codVoto}
-                          </Avatar>
-                        </ListItemAvatar>
+              <Accordion>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                >
+                  <Typography>
+                    {item.materia}
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <div key={index}>
+                    <List>
+                      <ListItem>
                         <ListItemText
+                          /*primary={
+                          <React.Fragment>
+                            <Typography variant="h6" component="span">
+                              {item.materia}
+                            </Typography>
+                          </React.Fragment>
+                        }*/
                           primary={
                             <React.Fragment>
-                              <Typography
-                                sx={{ display: "inline", fontWeight: 600 }}
-                                component="span"
-                              >
-                                {descrizione}
-                              </Typography>
-                            </React.Fragment>
-                          }
-                          secondary={
-                            <React.Fragment>
-                              <Typography
-                                sx={{ display: "inline" }}
-                                component="span"
-                                variant="body2"
-                                color="text.primary"
-                              >
-                                {tipologia}
-                              </Typography>
-                              <br />
-                              {docente} | {item.datGiorno}
+                              <Typography variant="h6">{`Media: ${calcMedia(
+                                votiList
+                              )}`}</Typography>
                             </React.Fragment>
                           }
                         />
                       </ListItem>
-                    );
-                  })}
-                </List>
-              </div>
+                    </List>
+                    <Divider />
+                    <List>
+                      {item.voti.map((item, index) => {
+                        const docente = item.docente
+                          .replace("(", "")
+                          .replace(")", "")
+                          .replace("Prof. ", "");
+
+                        let voto = item.decValore;
+
+                        let tipologia = "";
+                        if (item.codVotoPratico === "S") {
+                          tipologia = "Compito Scritto";
+                        } else {
+                          if (item.codVotoPratico === "N") {
+                            tipologia = "Interrogazione orale";
+                          } else {
+                            tipologia = "Prova pratica";
+                          }
+                        }
+
+                        let descrizione = "Nessuna descrizione";
+                        if (item.desProva) {
+                          descrizione = item.desProva;
+                        }
+
+                        let avatarColor = "";
+                        voto < 6
+                          ? (avatarColor = red[500])
+                          : (avatarColor = green[500]);
+
+                        return (
+                          <ListItem
+                            key={index}
+                            sx={{
+                              border: "1px solid #ccc",
+                              borderRadius: "5px",
+                              margin: 1,
+                            }}
+                          >
+                            <ListItemAvatar>
+                              <Avatar sx={{ bgcolor: avatarColor }}>
+                                {item.codVoto}
+                              </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText
+                              primary={
+                                <React.Fragment>
+                                  <Typography
+                                    sx={{ display: "inline", fontWeight: 600 }}
+                                    component="span"
+                                  >
+                                    {descrizione}
+                                  </Typography>
+                                </React.Fragment>
+                              }
+                              secondary={
+                                <React.Fragment>
+                                  <Typography
+                                    sx={{ display: "inline" }}
+                                    component="span"
+                                    variant="body2"
+                                    color="text.primary"
+                                  >
+                                    {tipologia}
+                                  </Typography>
+                                  <br />
+                                  {docente} | {item.datGiorno}
+                                </React.Fragment>
+                              }
+                            />
+                          </ListItem>
+                        );
+                      })}
+                    </List>
+                  </div>
+                </AccordionDetails>
+              </Accordion>
             );
           })}
         </List>

@@ -43,11 +43,10 @@ export default function Compiti() {
       let month = new Date().getMonth() + 1;
       if (month < 10) {
         month = `0${month}`;
-      }
+      };
       const current = new Date(
         `${new Date().getFullYear()}-${month}-${new Date().getDate()}`
       );
-      console.log(current);
       compiti.forEach((compito) => {
         if (new Date(compito.datCompiti) > current) {
           newCompiti.push(compito);

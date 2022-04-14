@@ -46,8 +46,4 @@ export const subPages = [
         "name": "Bacheca",
         "icon": <PushPinIcon />
     },
-    {
-        "name": "Condivisione",
-        "icon": <FolderSharedIcon />
-    }
 ]

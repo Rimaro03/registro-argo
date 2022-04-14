@@ -6,6 +6,7 @@ import Note from './components/subpages/Note/Note';
 import Scrutinio from './components/subpages/Scrutinio/Scrutinio';
 import Compiti from './components/subpages/Compiti/Compiti';
 import Argomenti from './components/subpages/Argomenti/Argomenti';
+import Promemoria from './components/subpages/Promemoria/Promemoria';
 import NoMatch from './components/NoMatch/NoMatch';
 import { Routes, Route } from "react-router-dom";
 
@@ -23,6 +24,7 @@ function App() {
         <Route path="/scrutinio" element={ <Scrutinio /> } />
         <Route path="/compiti" element={ <Compiti /> } />
         <Route path="/argomenti" element={ <Argomenti /> } />
+        <Route path="/promemoria" element={ <Promemoria /> } />
         <Route path="*" element={ <NoMatch /> }/>
       </Routes>
     </>

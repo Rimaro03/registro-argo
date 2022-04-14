@@ -15,13 +15,11 @@ import {
   AccordionDetails,
 } from "@mui/material";
 import { Toolbar } from "@mui/material";
-import { Typography, Grid, Paper } from "@mui/material";
+import { Typography } from "@mui/material";
 import getVoti from "../../../api/getVoti";
-import { red, green, blue } from "@mui/material/colors";
-import ClassIcon from "@mui/icons-material/Class";
+import { red, green } from "@mui/material/colors";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-//TODO: GRAFICO VOTI
 export default function Voti() {
   const [cookies] = useCookies();
   const [voti, setVoti] = useState([]);
@@ -33,7 +31,6 @@ export default function Voti() {
 
     getVoti(cookies.token).then((votiArray) => {
       const newVoti = organizer(votiArray);
-      console.log(newVoti);
       setVoti(newVoti);
     });
   }, []);

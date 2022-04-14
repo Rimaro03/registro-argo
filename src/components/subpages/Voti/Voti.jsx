@@ -9,26 +9,18 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
+  Divider,
 } from "@mui/material";
 import { Toolbar } from "@mui/material";
 import { Typography, Grid, Paper } from "@mui/material";
 import getVoti from "../../../api/getVoti";
-import { red, green } from "@mui/material/colors";
-import {
-  LineChart,
-  Line,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  ResponsiveContainer,
-} from "recharts";
+import { red, green, blue } from "@mui/material/colors";
+import ClassIcon from "@mui/icons-material/Class";
 
 //TODO: GRAFICO VOTI
 export default function Voti() {
   const [cookies] = useCookies();
   const [voti, setVoti] = useState([]);
-  const [chartData, setChartData] = useState([]);
-  const [avg, setAvg] = useState([]);
 
   useEffect(() => {
     if (!cookies.token) {
@@ -36,28 +28,40 @@ export default function Voti() {
     }
 
     getVoti(cookies.token).then((votiArray) => {
-      setVoti(votiArray);
-
-      let months = [1, 2, 3, 4, 5, 6];
-
-      let votiList = [];
-      votiArray.forEach((voto) => {
-        let votoNumber = voto.codVoto;
-        if (votoNumber.includes("10")) {
-          votoNumber = Number(voto.codVoto.slice(0, 2));
-        } else {
-          votoNumber = Number(voto.codVoto.slice(0, 1));
-        }
-
-        if (!months.includes(Number(voto.datGiorno.split("-")[1]))) {
-          return;
-        }
-
-        votiList.push({ mese: voto.datGiorno.split("-")[1], voto: votoNumber });
-      });
-      setChartData(votiList);
+      const newVoti = organizer(votiArray);
+      console.log(newVoti);
+      setVoti(newVoti);
     });
   }, []);
+
+  const organizer = (votiList) => {
+    let newVoti = [];
+    votiList.forEach((voto) => {
+      let exists = false;
+      newVoti.forEach((newVoto) => {
+        if (newVoto.materia && voto.desMateria.includes(newVoto.materia)) {
+          exists = true;
+          newVoto.voti.push(voto);
+        }
+      });
+      if (!exists) {
+        newVoti.push({
+          materia: voto.desMateria,
+          voti: [voto],
+        });
+      }
+    });
+    return newVoti;
+  };
+
+  const calcMedia = (votiList) => {
+    let media = 0;
+    votiList.forEach((voto) => {
+      media += voto;
+    });
+    media = media / votiList.length;
+    return media.toFixed(2);
+  };
 
   const drawerWidth = 300;
 
@@ -76,98 +80,116 @@ export default function Voti() {
         }}
       >
         <Toolbar />
-        <Typography variant="h4" >Voti</Typography>
-        <Grid item xs={12} md={8} lg={9}>
-          <Paper
-            sx={{
-              p: 2,
-              display: "flex",
-              flexDirection: "column",
-              height: 240,
-            }}
-          >
-            <ResponsiveContainer>
-              <LineChart
-                data={chartData.reverse()}
-                margin={{
-                  top: 16,
-                  right: 16,
-                  bottom: 0,
-                }}
-              >
-                <XAxis dataKey="mese" hide={true} />
-                <YAxis />
-                <Line
-                  name="voto"
-                  type="monotone"
-                  dataKey="voto"
-                  stroke="#8884d8"
-                />
-                <CartesianGrid stroke="#ccc" />
-              </LineChart>
-            </ResponsiveContainer>
-          </Paper>
-        </Grid>
-
+        <Typography variant="h4">Voti</Typography>
         <List>
           {voti.map((item, index) => {
-            const docente = item.docente
-              .replace("(", "")
-              .replace(")", "")
-              .replace("Prof. ", "");
-            let voto = item.codVoto;
-            if (voto.includes("10")) {
-              voto = Number(item.codVoto.slice(0, 2));
-            } else {
-              voto = Number(item.codVoto.slice(0, 1));
-            }
-
-            let descrizione = "Nessuna descrizione";
-            if (item.desProva) {
-              descrizione = item.desProva;
-            }
-            let avatarColor = "";
-            voto < 6 ? (avatarColor = red[500]) : (avatarColor = green[500]);
-
+            let votiList = [];
+            item.voti.forEach((voto) => {
+              votiList.push(voto.decValore);
+            });
             return (
-              <ListItem
-                key={index}
-                sx={{
-                  border: "1px solid #ccc",
-                  borderRadius: "5px",
-                  margin: 1,
-                }}
-              >
-                <ListItemAvatar>
-                  <Avatar sx={{ bgcolor: avatarColor }}>{item.codVoto}</Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  primary={
-                    <React.Fragment>
-                      <Typography
-                        sx={{ display: "inline", fontWeight: 600 }}
-                        component="span"
+              <div key={index}>
+                <List>
+                  <ListItem>
+                    <ListItemAvatar>
+                      <Avatar >
+                        <ClassIcon />
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={
+                        <React.Fragment>
+                          <Typography variant="h6" component="span">
+                            {item.materia}
+                          </Typography>
+                        </React.Fragment>
+                      }
+                      secondary={
+                        <React.Fragment>
+                          <Typography component="span">{`Media: ${calcMedia(
+                            votiList
+                          )}`}</Typography>
+                        </React.Fragment>
+                      }
+                    />
+                  </ListItem>
+                </List>
+                <Divider />
+                <List sx={{ marginBottom: 2 }}>
+                  {item.voti.map((item, index) => {
+                    const docente = item.docente
+                      .replace("(", "")
+                      .replace(")", "")
+                      .replace("Prof. ", "");
+
+                    let voto = item.decValore;
+
+                    let tipologia = "";
+                    if (item.codVotoPratico === "S") {
+                      tipologia = "Compito Scritto";
+                    } else {
+                      if (item.codVotoPratico === "N") {
+                        tipologia = "Interrogazione orale";
+                      } else {
+                        tipologia = "Prova pratica";
+                      }
+                    }
+
+                    let descrizione = "Nessuna descrizione";
+                    if (item.desProva) {
+                      descrizione = item.desProva;
+                    }
+
+                    let avatarColor = "";
+                    voto < 6
+                      ? (avatarColor = red[500])
+                      : (avatarColor = green[500]);
+
+                    return (
+                      <ListItem
+                        key={index}
+                        sx={{
+                          border: "1px solid #ccc",
+                          borderRadius: "5px",
+                          margin: 1,
+                        }}
                       >
-                        {item.desMateria}
-                      </Typography>
-                    </React.Fragment>
-                  }
-                  secondary={
-                    <React.Fragment>
-                      <Typography
-                        sx={{ display: "inline" }}
-                        component="span"
-                        variant="body2"
-                        color="text.primary"
-                      >
-                        {descrizione}
-                      </Typography>
-                      <br />
-                      {docente} | {item.datGiorno}
-                    </React.Fragment>
-                  }
-                />
-              </ListItem>
+                        <ListItemAvatar>
+                          <Avatar sx={{ bgcolor: avatarColor }}>
+                            {item.codVoto}
+                          </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText
+                          primary={
+                            <React.Fragment>
+                              <Typography
+                                sx={{ display: "inline", fontWeight: 600 }}
+                                component="span"
+                              >
+                                {descrizione}
+                              </Typography>
+                            </React.Fragment>
+                          }
+                          secondary={
+                            <React.Fragment>
+                              <Typography
+                                sx={{ display: "inline" }}
+                                component="span"
+                                variant="body2"
+                                color="text.primary"
+                              >
+                                {tipologia}
+                              </Typography>
+                              <br />
+                              {docente} | {item.datGiorno}
+                            </React.Fragment>
+                          }
+                        />
+                      </ListItem>
+                    );
+                  })}
+                </List>
+              </div>
             );
           })}
         </List>

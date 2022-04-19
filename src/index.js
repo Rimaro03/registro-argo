@@ -8,9 +8,7 @@ const container = document.getElementById('root');
 const root = ReactDOMClient.createRoot(container);
 
 root.render(
-  <BrowserRouter>
-    <CookiesProvider>
-      <App />
-    </CookiesProvider>
-  </BrowserRouter>
+  <CookiesProvider>
+    <App />
+  </CookiesProvider>
 )

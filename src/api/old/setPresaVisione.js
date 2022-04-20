@@ -1,5 +1,5 @@
 const axios = require("axios").default;
-const config = require("../config.json")
+const config = require("../../config.json")
 
 const setPresaVisione = async (token, prgMessaggio) => {
     const options = {

@@ -1,6 +1,7 @@
 const axios = require("axios").default;
 const config = require("../config.json")
 
+
 const getArgomenti = async (token) => {
     const options = {
         headers: {

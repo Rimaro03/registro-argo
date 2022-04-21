@@ -7,6 +7,7 @@ import { CssBaseline } from "@mui/material";
 import { Toolbar } from "@mui/material";
 import { Typography } from "@mui/material";
 import decode from "../../../functions/decode";
+import apiRequest from "../../../api/apiRequest";
 
 export default function Riepilogo() {
   const [cookies, setCookie] = useCookies();
@@ -15,6 +16,10 @@ export default function Riepilogo() {
     if (!cookies.token) {
       window.location.href = "/login";
     }
+
+    apiRequest("votigiornalieri").then((res) => {
+      console.log(`RES\n${res}`);
+    });
   }, []);
 
   const drawerWidth = 300;

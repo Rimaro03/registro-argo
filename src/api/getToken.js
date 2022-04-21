@@ -1,9 +1,7 @@
 const axios = require("axios").default;
 const config = require("../config.json")
-const getAlunnoData = require("./getAlunnoData")
-const encode = require("../functions/encode")
 
-const checkCredenziali = async (username, password, codScuola) => {
+const getToken = async (username, password, codScuola) => {
     const options = {
         headers: {
             'Access-Control-Allow-Origin': '*',
@@ -22,13 +20,9 @@ const checkCredenziali = async (username, password, codScuola) => {
 
 
     try {
-        let token = await axios.get(`${config.argoBasicURL}/login`, options)
+        let token = axios.get(`${config.argoBasicURL}/login`, options)
             .then(res => res.data.token);
-        let alunnoData = await getAlunnoData(token)
-        
-        let toCrypt = `${token}---${alunnoData.prgAlunno}---${alunnoData.prgScuola}---${alunnoData.prgScheda}`
-        let crypted = encode(toCrypt);
-        return crypted;
+        return token;
     }
     catch (err) {
         return false;
@@ -36,4 +30,4 @@ const checkCredenziali = async (username, password, codScuola) => {
 
 }
 
-export default checkCredenziali;
+export default getToken;

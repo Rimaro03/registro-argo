@@ -7,7 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import { useCookies } from 'react-cookie';
-import getUserInfo from '../../api/getUserInfo'
+import apiRequest from '../../api/apiRequest';
 import { Container, Tooltip, Avatar, MenuItem } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
@@ -19,11 +19,9 @@ const Header = () => {
     const [cookies, setCookie] = useCookies();
 
     useEffect(() => {
-        getUserInfo(cookies.token)
-            .then(alunno => {
-                setNome(alunno.desNome);
-                setCognome(alunno.desCognome);
-            })
+        apiRequest("schede").then((res)=>{
+            console.log(res);
+        })
     })
 
     const handleOpenUserMenu = (event) => {

@@ -13,13 +13,9 @@ export default function Riepilogo() {
   const [cookies, setCookie] = useCookies();
 
   useEffect(() => {
-    if (!cookies.token) {
+    if (!cookies.session) {
       window.location.href = "/login";
     }
-
-    apiRequest("votigiornalieri").then((res) => {
-      console.log(`RES\n${res}`);
-    });
   }, []);
 
   const drawerWidth = 300;

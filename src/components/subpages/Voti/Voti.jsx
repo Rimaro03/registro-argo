@@ -16,21 +16,21 @@ import {
 } from "@mui/material";
 import { Toolbar } from "@mui/material";
 import { Typography } from "@mui/material";
-import getVoti from "../../../api/getVoti";
 import { red, green } from "@mui/material/colors";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import apiRequest from "../../../api/apiRequest";
 
 export default function Voti() {
   const [cookies] = useCookies();
   const [voti, setVoti] = useState([]);
 
   useEffect(() => {
-    if (!cookies.token) {
+    if (!cookies.session) {
       window.location.href = "/login";
     }
 
-    getVoti(cookies.token).then((votiArray) => {
-      const newVoti = organizer(votiArray);
+    apiRequest("votigiornalieri").then((res) => {
+      const newVoti = organizer(res.dati);
       setVoti(newVoti);
     });
   }, []);
@@ -89,15 +89,13 @@ export default function Voti() {
               votiList.push(voto.decValore);
             });
             return (
-              <Accordion>
+              <Accordion key={index}>
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
                   aria-controls="panel1a-content"
                   id="panel1a-header"
                 >
-                  <Typography>
-                    {item.materia}
-                  </Typography>
+                  <Typography>{item.materia}</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   <div key={index}>

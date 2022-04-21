@@ -12,25 +12,21 @@ import {
   Button,
   Accordion,
   AccordionSummary,
-  ListItemSecondaryAction,
   AccordionDetails,
   ListItemButton,
-  Divider,
-  Collapse,
   ListItemIcon,
   Snackbar,
 } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
 import { Toolbar } from "@mui/material";
 import { Typography } from "@mui/material";
-import getBacehca from "../../../api/getBacheca";
 import setPresaVisione from "../../../api/setPresaVisione";
 import getAllegato from "../../../api/getAllegato";
 import ArticleIcon from "@mui/icons-material/Article";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import AttachEmailIcon from "@mui/icons-material/AttachEmail";
-import { render } from "@testing-library/react";
+import apiRequest from "../../../api/apiRequest";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -43,17 +39,17 @@ export default function Bacheca() {
   const [snack, setSnack] = useState();
 
   useEffect(() => {
-    if (!cookies.token) {
+    if (!cookies.session) {
       window.location.href = "/login";
     }
 
-    getBacehca(cookies.token).then((bachecaArray) => {
-      setBacheca(bachecaArray);
+    apiRequest("bachecanuova").then((res) => {
+      setBacheca(res.dati);
     });
   }, []);
 
   const handlePresaVisione = (comunicazione) => {
-    setPresaVisione(cookies.token, comunicazione.prgMessaggio).then(
+    setPresaVisione(window.localStorage.getItem("token"), comunicazione.prgMessaggio).then(
       (response) => {
         if (
           response.message ==
@@ -90,7 +86,7 @@ export default function Bacheca() {
 
   const handleDownloadAllegato = (allegato) => {
     getAllegato(
-      cookies.token,
+      window.localStorage.getItem("token"),
       allegato.prgMessaggio,
       allegato.prgAllegato
     ).then((response) => {

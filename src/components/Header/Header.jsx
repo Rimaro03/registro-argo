@@ -20,7 +20,8 @@ const Header = () => {
 
     useEffect(() => {
         apiRequest("schede").then((res)=>{
-            console.log(res);
+            setNome(res[0].alunno.desNome);
+            setCognome(res[0].alunno.desCognome);
         })
     })
 

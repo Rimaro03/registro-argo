@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { DataGrid } from "@mui/x-data-grid";
-import getScrutinio from "../../../api/getScrutinio";
 import Header from "../../Header/Header";
 import Menu from "../../Menu/Menu";
 import { useCookies } from "react-cookie";
@@ -15,7 +13,6 @@ import {
   TableCell,
   TableBody,
 } from "@mui/material";
-import checkScrutini from "../../../api/checkScrutini";
 import {
   RadarChart,
   PolarGrid,
@@ -23,6 +20,7 @@ import {
   PolarRadiusAxis,
   Radar,
 } from "recharts";
+import apiRequest from "../../../api/apiRequest";
 
 export default function Scrutinio() {
   const [cookies] = useCookies();
@@ -31,11 +29,23 @@ export default function Scrutinio() {
   const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
-    if (!cookies.token) {
+    if (!cookies.session) {
       window.location.href = "/login";
     }
 
-    getScrutinio(cookies.token).then((scrutinioArray) => {
+    apiRequest("votiscrutinio").then((res) => {
+      let scrutinioArray = [];
+      let id = 0;
+      res.forEach((dato) => {
+        scrutinioArray.push({
+          id: id,
+          Materia: dato.desMateria,
+          Voto: dato.votoOrale.codVoto,
+          Assenze: dato.assenze,
+        });
+        id++;
+      });
+
       setScrutinio(scrutinioArray);
       let datas = scrutinioArray.map((item) => item);
       datas.splice(
@@ -49,8 +59,20 @@ export default function Scrutinio() {
       setChartData(datas);
     });
 
-    checkScrutini(cookies.token).then((scrutiniObj) => {
-      setScrutini(scrutiniObj);
+    apiRequest("periodiclasse").then((res) => {
+      let periodi = {
+        primo: false,
+        secondo: false,
+      };
+
+      if (res.dati[0].flgVotiVisibili) {
+        periodi.primo = true;
+      }
+      if (res.dati[1].flgVotiVisibili) {
+        periodi.secondo = true;
+      }
+
+      setScrutini(periodi);
     });
   }, []);
 
@@ -62,7 +84,6 @@ export default function Scrutinio() {
   scrutinio.forEach((voto) => {
     datiPrimoScrutinio.push(createData(voto.Materia, voto.Voto, voto.Assenze));
   });
-  console.log(scrutinio);
 
   const colonne = ["Materia", "Voto", "Assenze"];
 
@@ -71,7 +92,7 @@ export default function Scrutinio() {
       return (
         <>
           <Typography variant="h4">Primo scrutinio</Typography>
-          <TableContainer component={Paper} sx={{marginTop: 2}}>
+          <TableContainer component={Paper} sx={{ marginTop: 2 }}>
             <Table sx={{ minwidth: 680 }} aria-label="Voti">
               <TableHead>
                 <TableRow>
@@ -136,14 +157,14 @@ export default function Scrutinio() {
         {loadPrimoScrutinio()}
       </Box>
       <RadarChart
-        outerRadius={150}
+        outerRadius={180}
         width={tableWidth}
-        height={700}
+        height={750}
         data={chartData}
       >
         <PolarGrid />
-        <PolarAngleAxis dataKey="Materia" />
-        <PolarRadiusAxis angle={30} domain={[0, 10]} />
+        <PolarAngleAxis dataKey="Materia" stroke="white" />
+        <PolarRadiusAxis angle={54} domain={[0, 10]} display="none"/>
         <Radar
           name="Alunno"
           dataKey="Voto"

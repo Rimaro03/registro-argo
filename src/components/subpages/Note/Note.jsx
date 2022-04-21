@@ -5,23 +5,22 @@ import { useCookies } from "react-cookie";
 import { Avatar, Box, List, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
 import { Toolbar } from "@mui/material";
 import { Typography } from "@mui/material";
-import getNote from "../../../api/getNote";
 import { red } from '@mui/material/colors';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
+import apiRequest from "../../../api/apiRequest";
 
 export default function Note() {
     const [cookies] = useCookies();
     const [note, setNote] = useState([]);
 
     useEffect(() => {
-        if (!cookies.token) {
+        if (!cookies.session) {
             window.location.href = "/login"
         }
 
-        getNote(cookies.token)
-            .then(noteArray => {
-                setNote(noteArray);
-            })
+        apiRequest("notedisciplinari").then((res)=>{
+            setNote(res.dati);
+        })
     }, [])
 
     const drawerWidth = 300;

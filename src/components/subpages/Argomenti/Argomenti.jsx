@@ -12,23 +12,23 @@ import {
 } from "@mui/material";
 import { Toolbar } from "@mui/material";
 import { Typography } from "@mui/material";
-import getArgomenti from "../../../api/getArgomenti";
 import { blue } from "@mui/material/colors";
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import apiRequest from "../../../api/apiRequest";
 
 export default function Argomenti() {
   const [cookies] = useCookies();
   const [argomenti, setArgomenti] = useState([]);
 
   useEffect(() => {
-    if (!cookies.token) {
+    if (!cookies.session) {
       window.location.href = "/login";
     }
 
-    getArgomenti(cookies.token).then((argomentiArray) => {
-      const newArgomenti = organizer(argomentiArray);
+    apiRequest("argomenti").then((res)=>{
+      const newArgomenti = organizer(res.dati);
       setArgomenti(newArgomenti);
-    });
+    })
   }, []);
 
   const organizer = (argomentiList) => {

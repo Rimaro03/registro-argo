@@ -49,42 +49,24 @@ export default function Bacheca() {
   }, []);
 
   const handlePresaVisione = (comunicazione) => {
-    setPresaVisione(window.localStorage.getItem("token"), comunicazione.prgMessaggio).then(
-      (response) => {
-        if (
-          response.message ==
-          "Per confermare la presa visione, è necessario scaricare almeno un allegato."
-        ) {
-          setSnack(
-            <Alert
-              onClose={handleClose}
-              severity="error"
-              sx={{ width: "100%" }}
-            >
-              Scarica almeno un allegato per confermare la presa visione!
-            </Alert>
-          );
-        } else {
-          setSnack(
-            <Alert
-              onClose={handleClose}
-              severity="success"
-              sx={{ width: "100%" }}
-            >
-              Presa visione confermata!
-            </Alert>
-          );
-        }
-        setOpen(true);
-      }
-    );
+    setPresaVisione(
+      window.localStorage.getItem("token"),
+      comunicazione.prgMessaggio
+    ).then((response) => {
+      setSnack(
+        <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
+          Presa visione confermata!
+        </Alert>
+      );
+      setOpen(true);
+    });
   };
 
   const handleClose = () => {
     setOpen(false);
   };
 
-  const handleDownloadAllegato = (allegato) => {
+  const handleDownloadAllegato = (allegato, comunicazione) => {
     getAllegato(
       window.localStorage.getItem("token"),
       allegato.prgMessaggio,
@@ -92,6 +74,8 @@ export default function Bacheca() {
     ).then((response) => {
       window.open(response.url);
     });
+
+    handlePresaVisione(comunicazione);
   };
 
   const drawerWidth = 300;
@@ -118,17 +102,9 @@ export default function Bacheca() {
             if (item.richiediPv) {
               if (!item.dataConfermaPresaVisione) {
                 Presavisione = (
-                  <Button
-                    edge="end"
-                    variant="contained"
-                    sx={{ marginTop: 1 }}
-                    onClick={() => {
-                      handlePresaVisione(item);
-                    }}
-                    startIcon={<VisibilityIcon />}
-                  >
-                    Prendi visione
-                  </Button>
+                  <Typography component="span">
+                    Presa visione non confermata!
+                  </Typography>
                 );
               } else {
                 Presavisione = (
@@ -153,13 +129,13 @@ export default function Bacheca() {
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
-                    <List>
+                    <List component={'span'}>
                       {item.allegati.map((allegato, index) => {
                         return (
-                          <ListItem key={index}>
+                          <ListItem key={index} component={'span'}>
                             <ListItemButton
                               onClick={() => {
-                                handleDownloadAllegato(allegato);
+                                handleDownloadAllegato(allegato, item);
                               }}
                             >
                               <ListItemIcon>

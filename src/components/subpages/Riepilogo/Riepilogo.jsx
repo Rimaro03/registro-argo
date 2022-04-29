@@ -1,6 +1,6 @@
 import Header from "../../Header/Header";
 import Menu from "../../Menu/Menu";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { Box } from "@mui/material";
 import { CssBaseline } from "@mui/material";
@@ -10,11 +10,26 @@ import apiRequest from "../../../api/apiRequest";
 
 export default function Riepilogo() {
   const [cookies, setCookie] = useCookies();
+  const [tipi, setTipi] = useState([]);
 
   useEffect(() => {
     if (!cookies.session) {
       window.location.href = "/login";
     }
+
+    let month = new Date().getMonth() + 1
+    if (month < 10) {
+      month = `0${month}`;
+    }
+    const current = `${new Date().getFullYear()}-${month}-${new Date().getDate() - 1}`
+    let compitiList = []
+    apiRequest(`oggi?datGiorno=${current}`).then((res) => {
+      res.dati.forEach((dato) => {
+        //if(!tipi.find(value => value == dato.titolo)){
+        setTipi(...tipi, dato)
+        //}
+      })
+    })
   }, []);
 
   const drawerWidth = 300;
@@ -35,6 +50,7 @@ export default function Riepilogo() {
       >
         <Toolbar />
         <Typography>IN COSTRUZIONE</Typography>
+        {console.log(tipi)}
       </Box>
     </Box>
   );

@@ -2,6 +2,7 @@ const axios = require("axios").default;
 const config = require("../config.json")
 
 const getAlunnoData = async (token) => {
+    console.log(`TOKEN: ${token}`);
     const options = {
         headers: {
             'Access-Control-Allow-Origin': '*',
@@ -27,7 +28,6 @@ const getAlunnoData = async (token) => {
         return alunnoData;
     }
     catch (err) {
-        console.log(err);
         return false;
     }
 }

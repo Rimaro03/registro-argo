@@ -12,25 +12,21 @@ import {
   Button,
   Accordion,
   AccordionSummary,
-  ListItemSecondaryAction,
   AccordionDetails,
   ListItemButton,
-  Divider,
-  Collapse,
   ListItemIcon,
   Snackbar,
 } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
 import { Toolbar } from "@mui/material";
 import { Typography } from "@mui/material";
-import getBacehca from "../../../api/getBacheca";
 import setPresaVisione from "../../../api/setPresaVisione";
 import getAllegato from "../../../api/getAllegato";
 import ArticleIcon from "@mui/icons-material/Article";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import AttachEmailIcon from "@mui/icons-material/AttachEmail";
-import { render } from "@testing-library/react";
+import apiRequest from "../../../api/apiRequest";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -43,59 +39,43 @@ export default function Bacheca() {
   const [snack, setSnack] = useState();
 
   useEffect(() => {
-    if (!cookies.token) {
+    if (!cookies.session) {
       window.location.href = "/login";
     }
 
-    getBacehca(cookies.token).then((bachecaArray) => {
-      setBacheca(bachecaArray);
+    apiRequest("bachecanuova").then((res) => {
+      setBacheca(res.dati);
     });
   }, []);
 
   const handlePresaVisione = (comunicazione) => {
-    setPresaVisione(cookies.token, comunicazione.prgMessaggio).then(
-      (response) => {
-        if (
-          response.message ==
-          "Per confermare la presa visione, è necessario scaricare almeno un allegato."
-        ) {
-          setSnack(
-            <Alert
-              onClose={handleClose}
-              severity="error"
-              sx={{ width: "100%" }}
-            >
-              Scarica almeno un allegato per confermare la presa visione!
-            </Alert>
-          );
-        } else {
-          setSnack(
-            <Alert
-              onClose={handleClose}
-              severity="success"
-              sx={{ width: "100%" }}
-            >
-              Presa visione confermata!
-            </Alert>
-          );
-        }
-        setOpen(true);
-      }
-    );
+    setPresaVisione(
+      window.localStorage.getItem("token"),
+      comunicazione.prgMessaggio
+    ).then((response) => {
+      setSnack(
+        <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
+          Presa visione confermata!
+        </Alert>
+      );
+      setOpen(true);
+    });
   };
 
   const handleClose = () => {
     setOpen(false);
   };
 
-  const handleDownloadAllegato = (allegato) => {
+  const handleDownloadAllegato = (allegato, comunicazione) => {
     getAllegato(
-      cookies.token,
+      window.localStorage.getItem("token"),
       allegato.prgMessaggio,
       allegato.prgAllegato
     ).then((response) => {
       window.open(response.url);
     });
+
+    handlePresaVisione(comunicazione);
   };
 
   const drawerWidth = 300;
@@ -122,17 +102,9 @@ export default function Bacheca() {
             if (item.richiediPv) {
               if (!item.dataConfermaPresaVisione) {
                 Presavisione = (
-                  <Button
-                    edge="end"
-                    variant="contained"
-                    sx={{ marginTop: 1 }}
-                    onClick={() => {
-                      handlePresaVisione(item);
-                    }}
-                    startIcon={<VisibilityIcon />}
-                  >
-                    Prendi visione
-                  </Button>
+                  <Typography component="span">
+                    Presa visione non confermata!
+                  </Typography>
                 );
               } else {
                 Presavisione = (
@@ -157,13 +129,13 @@ export default function Bacheca() {
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
-                    <List>
+                    <List component={'span'}>
                       {item.allegati.map((allegato, index) => {
                         return (
-                          <ListItem key={index}>
+                          <ListItem key={index} component={'span'}>
                             <ListItemButton
                               onClick={() => {
-                                handleDownloadAllegato(allegato);
+                                handleDownloadAllegato(allegato, item);
                               }}
                             >
                               <ListItemIcon>

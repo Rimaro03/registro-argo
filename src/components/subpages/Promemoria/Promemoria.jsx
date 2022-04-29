@@ -15,9 +15,9 @@ import {
   FormControlLabel,
   FormGroup,
 } from "@mui/material";
-import getPromemoria from "../../../api/getPromemoria";
 import { green } from "@mui/material/colors";
 import AssignmentIcon from "@mui/icons-material/Assignment";
+import apiRequest from "../../../api/apiRequest";
 
 export default function Promemoria() {
   const [cookies] = useCookies();
@@ -25,12 +25,12 @@ export default function Promemoria() {
   const [promemoria, setPromemoria] = useState([]);
 
   useEffect(() => {
-    if (!cookies.token) {
+    if (!cookies.session) {
       window.location.href = "/login";
     }
 
-    getPromemoria(cookies.token).then((promemoriaArray) => {
-      setPromemoria(promemoriaArray);
+    apiRequest("promemoria").then((res) => {
+      setPromemoria(res.dati);
     });
   }, []);
 
@@ -54,8 +54,8 @@ export default function Promemoria() {
       });
       setPromemoria(newPromemoria);
     } else {
-      getPromemoria(cookies.token).then((promemoriaArray) => {
-        setPromemoria(promemoriaArray);
+      apiRequest("promemoria").then((res) => {
+        setPromemoria(res.dati);
       });
     }
   };

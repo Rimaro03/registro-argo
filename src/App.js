@@ -11,7 +11,7 @@ import Promemoria from './components/subpages/Promemoria/Promemoria';
 import Bacheca from './components/subpages/Bacheca/Bacheca';
 import NoMatch from './components/NoMatch/NoMatch';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useTheme, ThemeProvider, createTheme } from '@mui/material/styles';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 function App() {
   const mode = 'dark';
@@ -40,7 +40,7 @@ function App() {
           <Route path="/argomenti" element={<Argomenti />} />
           <Route path="/promemoria" element={<Promemoria />} />
           <Route path="/bacheca" element={<Bacheca />} />
-          <Route path="*" element={<NoMatch />} />
+  <Route path="*" element={<NoMatch />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

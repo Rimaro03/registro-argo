@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
-import getAssenze from "../../../api/getAssenze";
 import Header from "../../Header/Header";
 import Menu from "../../Menu/Menu";
 import {
@@ -25,6 +24,7 @@ import {
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import DoneIcon from "@mui/icons-material/Done";
 import { green } from "@mui/material/colors";
+import apiRequest from "../../../api/apiRequest";
 
 //TODO: RIEPILOGO ASSENZE
 export default function Assenze() {
@@ -33,17 +33,17 @@ export default function Assenze() {
   const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
-    if (!cookies.token) {
+    if (!cookies.session) {
       window.location.href = "/login";
     }
 
-    getAssenze(cookies.token).then((assenzeArray) => {
-      setAssenze(assenzeArray);
+    apiRequest("assenze").then((res) => {
+      setAssenze(res.dati);
 
       let assenze = 0;
       let ingressi = 0;
       let uscite = 0;
-      assenzeArray.forEach((item) => {
+      res.dati.forEach((item) => {
         switch (item.codEvento) {
           case "A":
             assenze++;

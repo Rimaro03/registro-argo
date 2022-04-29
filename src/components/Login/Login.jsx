@@ -10,7 +10,9 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useCookies } from "react-cookie";
-import checkCredenziali from "../../api/checkCredenziali";
+import getToken from "../../api/getToken";
+import { nanoid } from "nanoid";
+import getAlunnoData from "../../api/getAlunnoData";
 
 export default function SignIn() {
   const [cookies, setCookie] = useCookies();
@@ -26,13 +28,22 @@ export default function SignIn() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    const token = await getToken(username, password, codScuola).then(
+      (res) => res
+    );
 
-    const token = await checkCredenziali(username, password, codScuola);
     if (!token) {
       alert("Credenziali errate");
     } else {
-      setCookie("token", token, { path: "/" });
+      setCookie("session", nanoid(), { path: "/" });
+
+      await getAlunnoData(token).then((res) => {
+        console.log(`ALUNNO DATA\,${JSON.stringify(res)}`);
+        window.localStorage.setItem("alunnoData", JSON.stringify(res));
+      });
+
       window.location.href = "/riepilogo";
+      window.localStorage.setItem("token", token);
     }
   };
 

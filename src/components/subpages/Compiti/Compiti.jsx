@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
-import getCompiti from "../../../api/getCompiti";
 import Header from "../../Header/Header";
 import Menu from "../../Menu/Menu";
 import {
@@ -18,6 +17,7 @@ import { Toolbar } from "@mui/material";
 import { Typography } from "@mui/material";
 import DescriptionIcon from "@mui/icons-material/Description";
 import { green } from "@mui/material/colors";
+import apiRequest from "../../../api/apiRequest";
 
 export default function Compiti() {
   const [cookies] = useCookies();
@@ -25,12 +25,12 @@ export default function Compiti() {
   const [checked, setChecked] = useState(true);
 
   useEffect(() => {
-    if (!cookies.token) {
+    if (!cookies.session) {
       window.location.href = "/login";
     }
 
-    getCompiti(cookies.token).then((compitiArray) => {
-      setCompiti(compitiArray);
+    apiRequest("compiti").then((res) => {
+      setCompiti(res.dati);
     });
   }, []);
 
@@ -43,7 +43,7 @@ export default function Compiti() {
       let month = new Date().getMonth() + 1;
       if (month < 10) {
         month = `0${month}`;
-      };
+      }
       const current = new Date(
         `${new Date().getFullYear()}-${month}-${new Date().getDate()}`
       );
@@ -54,8 +54,8 @@ export default function Compiti() {
       });
       setCompiti(newCompiti);
     } else {
-      getCompiti(cookies.token).then((compitiArray) => {
-        setCompiti(compitiArray);
+      apiRequest("compiti").then((res) => {
+        setCompiti(res.dati);
       });
     }
   };

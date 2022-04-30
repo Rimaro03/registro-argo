@@ -20,20 +20,20 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import getOrario from "../../../api/getOrario";
 import getAlunnoData from "../../../api/getAlunnoData";
 
-export default function Promemoria() {
+export default function Orario() {
   const [cookies] = useCookies();
-  const [classe, setClasse] = useState("");
-  const [orario, setPromemoria] = useState([]);
+  const [orario, setOrario] = useState([]);
 
   useEffect(() => {
     if (!cookies.session) {
       window.location.href = "/login";
     }
 
-    getAlunnoData(session.token)
+    const data = JSON.parse(window.localStorage.getItem("schede"))
+    const classe = `${data.desDenominazione}${data.desCorso}`;
 
-    getOrario().then((res) => {
-      setPromemoria(res.dati);
+    getOrario(classe).then((res) => {
+      console.log(res);
     });
   }, []);
 

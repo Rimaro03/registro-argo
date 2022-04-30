@@ -21,10 +21,9 @@ export default function SignIn() {
   const [codScuola, setCodScuola] = useState("");
 
   useEffect(() => {
-    if (cookies.token) {
+    if (cookies.session) {
       window.location.href = "/riepilogo";
     }
-    getAlunnoData();
   }, []);
 
 
@@ -39,8 +38,13 @@ export default function SignIn() {
     } else {
       setCookie("session", nanoid(), { path: "/" });
 
-      window.location.href = "/riepilogo";
       window.localStorage.setItem("token", token);
+      
+      await getAlunnoData(token).then((res) => {
+        window.localStorage.setItem("schede", JSON.stringify(res))
+      });
+
+      window.location.href = "/riepilogo";
     }
   };
 

@@ -19,13 +19,7 @@ const getAlunnoData = async (token) => {
 
     try {
         let res = await axios.get(`${config.argoBasicURL}/schede`, options).then(res => res.data[0])
-
-        let alunnoData = {
-            prgAlunno: res.prgAlunno,
-            prgScuola: res.prgScuola,
-            prgScheda: res.prgScheda
-        }
-        return alunnoData;
+        window.localStorage.setItem("schede", JSON.stringify(res))
     }
     catch (err) {
         return false;

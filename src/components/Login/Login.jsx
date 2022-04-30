@@ -24,7 +24,9 @@ export default function SignIn() {
     if (cookies.token) {
       window.location.href = "/riepilogo";
     }
-  });
+    getAlunnoData();
+  }, []);
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -36,11 +38,6 @@ export default function SignIn() {
       alert("Credenziali errate");
     } else {
       setCookie("session", nanoid(), { path: "/" });
-
-      await getAlunnoData(token).then((res) => {
-        console.log(`ALUNNO DATA\,${JSON.stringify(res)}`);
-        window.localStorage.setItem("alunnoData", JSON.stringify(res));
-      });
 
       window.location.href = "/riepilogo";
       window.localStorage.setItem("token", token);

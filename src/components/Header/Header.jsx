@@ -19,10 +19,9 @@ const Header = () => {
     const [cookies, setCookie] = useCookies();
 
     useEffect(() => {
-        apiRequest("schede").then((res)=>{
-            setNome(res[0].alunno.desNome);
-            setCognome(res[0].alunno.desCognome);
-        })
+        const scheda = JSON.parse(window.localStorage.getItem("schede"))
+        setNome(scheda.alunno.desNome)
+        setCognome(scheda.alunno.desCognome)
     })
 
     const handleOpenUserMenu = (event) => {

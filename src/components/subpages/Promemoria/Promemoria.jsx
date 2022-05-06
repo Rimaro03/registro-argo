@@ -3,21 +3,16 @@ import Menu from "../../Menu/Menu";
 import React, { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import {
-  Avatar,
   Box,
   List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
   Toolbar,
   Switch,
   Typography,
   FormControlLabel,
   FormGroup,
 } from "@mui/material";
-import { green } from "@mui/material/colors";
-import AssignmentIcon from "@mui/icons-material/Assignment";
 import apiRequest from "../../../api/apiRequest";
+import GenPromemoria from "../../../gen/GenPromemoria";
 
 export default function Promemoria() {
   const [cookies] = useCookies();
@@ -99,61 +94,13 @@ export default function Promemoria() {
         </Box>
         <List>
           {promemoria.map((item, index) => {
-            const docente = item.desMittente
-              .replace("(", "")
-              .replace(")", "")
-              .replace("Prof. ", "");
-
-            let color = green[500];
-            if (dataOggi === item.datGiorno) {
-              color = "#ffcc00";
-            } else {
-              if (new Date(item.datGiorno) < new Date(dataOggi)) {
-                color = "#AAAAAA";
-              }
-            }
-
             return (
-              <ListItem
+              <GenPromemoria
+                item={item}
+                index={index}
+                dataOggi={dataOggi}
                 key={index}
-                sx={{
-                  border: "1px solid #ccc",
-                  borderRadius: "5px",
-                  margin: 1,
-                }}
-              >
-                <ListItemAvatar>
-                  <Avatar sx={{ bgcolor: color }}>
-                    <AssignmentIcon />
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  primary={
-                    <React.Fragment>
-                      <Typography
-                        sx={{ display: "inline", fontWeight: 600 }}
-                        component="span"
-                      >
-                        {docente}
-                      </Typography>
-                    </React.Fragment>
-                  }
-                  secondary={
-                    <React.Fragment>
-                      <Typography
-                        sx={{ display: "inline" }}
-                        component="span"
-                        variant="body2"
-                        color="text.primary"
-                      >
-                        {item.desAnnotazioni}
-                      </Typography>
-                      <br />
-                      {item.datGiorno}
-                    </React.Fragment>
-                  }
-                />
-              </ListItem>
+              />
             );
           })}
         </List>

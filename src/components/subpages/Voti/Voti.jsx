@@ -13,9 +13,10 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  Toolbar,
+  Typography,
 } from "@mui/material";
-import { Toolbar } from "@mui/material";
-import { Typography } from "@mui/material";
+import GenVoti from "../../../gen/GenVoti";
 import { red, green } from "@mui/material/colors";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import apiRequest from "../../../api/apiRequest";
@@ -122,75 +123,8 @@ export default function Voti() {
                     <Divider />
                     <List>
                       {item.voti.map((item, index) => {
-                        const docente = item.docente
-                          .replace("(", "")
-                          .replace(")", "")
-                          .replace("Prof. ", "");
-
-                        let voto = item.decValore;
-
-                        let tipologia = "";
-                        if (item.codVotoPratico === "S") {
-                          tipologia = "Compito Scritto";
-                        } else {
-                          if (item.codVotoPratico === "N") {
-                            tipologia = "Interrogazione orale";
-                          } else {
-                            tipologia = "Prova pratica";
-                          }
-                        }
-
-                        let descrizione = "Nessuna descrizione";
-                        if (item.desProva) {
-                          descrizione = item.desProva;
-                        }
-
-                        let avatarColor = "";
-                        voto < 6
-                          ? (avatarColor = red[500])
-                          : (avatarColor = green[500]);
-
                         return (
-                          <ListItem
-                            key={index}
-                            sx={{
-                              border: "1px solid #ccc",
-                              borderRadius: "5px",
-                              margin: 1,
-                            }}
-                          >
-                            <ListItemAvatar>
-                              <Avatar sx={{ bgcolor: avatarColor }}>
-                                {item.codVoto}
-                              </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText
-                              primary={
-                                <React.Fragment>
-                                  <Typography
-                                    sx={{ display: "inline", fontWeight: 600 }}
-                                    component="span"
-                                  >
-                                    {descrizione}
-                                  </Typography>
-                                </React.Fragment>
-                              }
-                              secondary={
-                                <React.Fragment>
-                                  <Typography
-                                    sx={{ display: "inline" }}
-                                    component="span"
-                                    variant="body2"
-                                    color="text.primary"
-                                  >
-                                    {tipologia}
-                                  </Typography>
-                                  <br />
-                                  {docente} | {item.datGiorno}
-                                </React.Fragment>
-                              }
-                            />
-                          </ListItem>
+                          <GenVoti item={item} index={index} key={index} />
                         );
                       })}
                     </List>

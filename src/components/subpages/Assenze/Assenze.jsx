@@ -3,14 +3,8 @@ import { useCookies } from "react-cookie";
 import Header from "../../Header/Header";
 import Menu from "../../Menu/Menu";
 import {
-  Avatar,
   Box,
   List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-} from "@mui/material";
-import {
   Toolbar,
   Typography,
   Table,
@@ -21,10 +15,8 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
-import WarningAmberIcon from "@mui/icons-material/WarningAmber";
-import DoneIcon from "@mui/icons-material/Done";
-import { green } from "@mui/material/colors";
 import apiRequest from "../../../api/apiRequest";
+import GenAssenze from "../../../gen/GenAssenze";
 
 //TODO: RIEPILOGO ASSENZE
 export default function Assenze() {
@@ -86,77 +78,7 @@ export default function Assenze() {
         <Typography variant="h4">Presenze</Typography>
         <List>
           {assenze.map((item, index) => {
-            const docente = item.registrataDa
-              .replace("(", "")
-              .replace(")", "")
-              .replace("Prof. ", "");
-            let evento = "";
-            switch (item.codEvento) {
-              case "A":
-                evento = `Assenza del ${item.datAssenza}`;
-                break;
-              case "I":
-                evento = `Ingresso alle ${item.oraAssenza.split(" ")[1]}`;
-                break;
-              case "U":
-                evento = `Uscita alle ${item.oraAssenza.split(" ")[1]}`;
-                break;
-              default:
-                break;
-            }
-
-            let giustificata = "Da Giustificare!";
-            let icon = <WarningAmberIcon />;
-            let color = "#ffcc00";
-            if (item.giustificataDa) {
-              giustificata = `Giustificata da ${item.giustificataDa
-                .replace("(", "")
-                .replace(")", "")
-                .replace("Prof. ", "")}`;
-              icon = <DoneIcon />;
-              color = green[500];
-            }
-            return (
-              <ListItem
-                key={index}
-                sx={{
-                  border: "1px solid #ccc",
-                  borderRadius: "5px",
-                  margin: 1,
-                }}
-              >
-                <ListItemAvatar>
-                  <Avatar sx={{ bgcolor: color }}>{icon}</Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  primary={
-                    <React.Fragment>
-                      <Typography
-                        sx={{ display: "inline", fontWeight: 600 }}
-                        component="span"
-                      >
-                        {evento}
-                      </Typography>
-                      <br />
-                    </React.Fragment>
-                  }
-                  secondary={
-                    <React.Fragment>
-                      <Typography
-                        sx={{ display: "inline" }}
-                        component="span"
-                        variant="body2"
-                        color="text.primary"
-                      >
-                        {giustificata}
-                      </Typography>
-                      <br />
-                      Segnata da {docente} | {item.datAssenza}
-                    </React.Fragment>
-                  }
-                />
-              </ListItem>
-            );
+            return <GenAssenze item={item} index={index} key={index} />;
           })}
         </List>
       </Box>

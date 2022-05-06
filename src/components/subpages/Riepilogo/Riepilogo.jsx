@@ -7,6 +7,12 @@ import { CssBaseline } from "@mui/material";
 import { Toolbar } from "@mui/material";
 import { Typography } from "@mui/material";
 import apiRequest from "../../../api/apiRequest";
+import GenArgomenti from "../../../gen/GenArgomenti";
+import GenAssenze from "../../../gen/GenAssenze";
+import GenCompiti from "../../../gen/GenCompiti";
+import GenNote from "../../../gen/GenNote";
+import GenPromemoria from "../../../gen/GenPromemoria";
+import GenVoti from "../../../gen/GenVoti";
 
 export default function Riepilogo() {
   const [cookies, setCookie] = useCookies();
@@ -30,7 +36,7 @@ export default function Riepilogo() {
       month = `0${month}`;
     }
     const current = `${new Date().getFullYear()}-${month}-${
-      new Date().getDate() - 5
+      new Date().getDate() - 1
     }`;
     apiRequest(`oggi?datGiorno=${current}`).then((res) => {
       let tipi = [];
@@ -83,12 +89,22 @@ export default function Riepilogo() {
                 </ListItemText>
                 <List>
                   {news[index].map((item2, index2) => {
-                    console.log(item2);
-                    return (
-                      <ListItem key={index2}>
-                        <ListItemText>{item2.dati.desCompiti}</ListItemText>
-                      </ListItem>
-                    );
+                    let Object = <p>Error</p>;
+                    switch (item) {
+                      case "Compiti assegnati":
+                        Object = (
+                          <GenCompiti
+                            item={item2}
+                            index={index2}
+                            key={index2}
+                          />
+                        );
+                        break;
+
+                      default:
+                        break;
+                    }
+                    return <Object />;
                   })}
                 </List>
               </ListItem>

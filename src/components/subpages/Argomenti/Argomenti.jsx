@@ -2,19 +2,9 @@ import Header from "../../Header/Header";
 import Menu from "../../Menu/Menu";
 import React, { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
-import {
-  Avatar,
-  Box,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-} from "@mui/material";
-import { Toolbar } from "@mui/material";
-import { Typography } from "@mui/material";
-import { blue } from "@mui/material/colors";
-import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import { Box, List, Toolbar, Typography } from "@mui/material";
 import apiRequest from "../../../api/apiRequest";
+import GenArgomenti from "../../../gen/GenArgomenti";
 
 export default function Argomenti() {
   const [cookies] = useCookies();
@@ -25,10 +15,10 @@ export default function Argomenti() {
       window.location.href = "/login";
     }
 
-    apiRequest("argomenti").then((res)=>{
+    apiRequest("argomenti").then((res) => {
       const newArgomenti = organizer(res.dati);
       setArgomenti(newArgomenti);
-    })
+    });
   }, []);
 
   const organizer = (argomentiList) => {
@@ -69,58 +59,19 @@ export default function Argomenti() {
       >
         <Toolbar />
         <Typography variant="h4">Argomenti</Typography>
-        <List sx={{marginTop: 4}}>
+        <List sx={{ marginTop: 4 }}>
           {argomenti.map((item, index) => {
             return (
               <div key={index}>
                 <Typography variant="h6">{item.data}</Typography>
                 <List>
                   {item.argomenti.map((argomento, index) => {
-                    const docente = argomento.docente
-                      .replace("(", "")
-                      .replace(")", "")
-                      .replace("Prof. ", "");
                     return (
-                      <ListItem
+                      <GenArgomenti
+                        item={argomento}
+                        index={index}
                         key={index}
-                        sx={{
-                          border: "1px solid #ccc",
-                          borderRadius: "5px",
-                          margin: 1,
-                        }}
-                      >
-                        <ListItemAvatar>
-                          <Avatar sx={{ bgcolor: blue[500] }}>
-                            <LibraryBooksIcon />
-                          </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText
-                          primary={
-                            <React.Fragment>
-                              <Typography
-                                sx={{ display: "inline", fontWeight: 600 }}
-                                component="span"
-                              >
-                                {argomento.desMateria}
-                              </Typography>
-                            </React.Fragment>
-                          }
-                          secondary={
-                            <React.Fragment>
-                              <Typography
-                                sx={{ display: "inline" }}
-                                component="span"
-                                variant="body2"
-                                color="text.primary"
-                              >
-                                {argomento.desArgomento}
-                              </Typography>
-                              <br />
-                              {docente}
-                            </React.Fragment>
-                          }
-                        />
-                      </ListItem>
+                      />
                     );
                   })}
                 </List>

@@ -3,21 +3,16 @@ import { useCookies } from "react-cookie";
 import Header from "../../Header/Header";
 import Menu from "../../Menu/Menu";
 import {
-  Avatar,
   Box,
   FormControlLabel,
   FormGroup,
   List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
   Switch,
+  Toolbar,
+  Typography,
 } from "@mui/material";
-import { Toolbar } from "@mui/material";
-import { Typography } from "@mui/material";
-import DescriptionIcon from "@mui/icons-material/Description";
-import { green } from "@mui/material/colors";
 import apiRequest from "../../../api/apiRequest";
+import GenCompiti from "../../../gen/GenCompiti";
 
 export default function Compiti() {
   const [cookies] = useCookies();
@@ -99,60 +94,13 @@ export default function Compiti() {
         </Box>
         <List>
           {compiti.map((item, index) => {
-            const docente = item.docente
-              .replace("(", "")
-              .replace(")", "")
-              .replace("Prof. ", "");
-            let color = green[500];
-            if (dataOggi === item.datCompiti) {
-              color = "#ffcc00";
-            } else {
-              if (new Date(item.datCompiti) < new Date(dataOggi)) {
-                color = "#AAAAAA";
-              }
-            }
             return (
-              <ListItem
+              <GenCompiti
+                item={item}
+                index={index}
+                dataOggi={dataOggi}
                 key={index}
-                sx={{
-                  border: "1px solid #ccc",
-                  borderRadius: "5px",
-                  margin: 1,
-                }}
-              >
-                <ListItemAvatar>
-                  <Avatar sx={{ bgcolor: color }}>
-                    <DescriptionIcon />
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  primary={
-                    <React.Fragment>
-                      <Typography
-                        sx={{ display: "inline", fontWeight: 600 }}
-                        component="span"
-                      >
-                        {item.desMateria}
-                      </Typography>
-                      <br />
-                    </React.Fragment>
-                  }
-                  secondary={
-                    <React.Fragment>
-                      <Typography
-                        sx={{ display: "inline" }}
-                        component="span"
-                        variant="body2"
-                        color="text.primary"
-                      >
-                        {item.desCompiti}
-                      </Typography>
-                      <br />
-                      {docente}, assegnati per il {item.datCompiti}
-                    </React.Fragment>
-                  }
-                />
-              </ListItem>
+              />
             );
           })}
         </List>

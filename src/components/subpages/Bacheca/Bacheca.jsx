@@ -9,22 +9,20 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
-  Button,
   Accordion,
   AccordionSummary,
   AccordionDetails,
   ListItemButton,
   ListItemIcon,
   Snackbar,
+  Toolbar,
+  Typography,
 } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
-import { Toolbar } from "@mui/material";
-import { Typography } from "@mui/material";
 import setPresaVisione from "../../../api/setPresaVisione";
 import getAllegato from "../../../api/getAllegato";
 import ArticleIcon from "@mui/icons-material/Article";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import AttachEmailIcon from "@mui/icons-material/AttachEmail";
 import apiRequest from "../../../api/apiRequest";
 
@@ -129,10 +127,10 @@ export default function Bacheca() {
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
-                    <List component={'span'}>
+                    <List component={"span"}>
                       {item.allegati.map((allegato, index) => {
                         return (
-                          <ListItem key={index} component={'span'}>
+                          <ListItem key={index} component={"span"}>
                             <ListItemButton
                               onClick={() => {
                                 handleDownloadAllegato(allegato, item);

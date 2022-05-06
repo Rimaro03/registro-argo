@@ -11,6 +11,7 @@ import DoneIcon from "@mui/icons-material/Done";
 import { green } from "@mui/material/colors";
 
 export default function GenAssenze(props) {
+  console.log(props);
   const docente = props.item.registrataDa
     .replace("(", "")
     .replace(")", "")

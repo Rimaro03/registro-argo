@@ -13,18 +13,13 @@ import GenCompiti from "../../../gen/GenCompiti";
 import GenNote from "../../../gen/GenNote";
 import GenPromemoria from "../../../gen/GenPromemoria";
 import GenVoti from "../../../gen/GenVoti";
+import GenBacheca from "../../../gen/GenBacheca";
 
 export default function Riepilogo() {
   const [cookies, setCookie] = useCookies();
   const [tipi, setTipi] = useState([]);
   const [news, setNews] = useState([]);
-
-  const nomi = {
-    Bacheca: ["desMessaggio", "desOggetto"],
-    "Assenze/Ritardi/Permessi": [null],
-    "Argomenti lezione": ["desArgomento", "desMateria", "docente"],
-    "Compiti assegnati": ["desCompiti", "desMateria", "docente", "datGiorno"],
-  };
+  const [date, setDate] = useState("");
 
   useEffect(() => {
     if (!cookies.session) {
@@ -35,9 +30,8 @@ export default function Riepilogo() {
     if (month < 10) {
       month = `0${month}`;
     }
-    const current = `${new Date().getFullYear()}-${month}-${
-      new Date().getDate() - 1
-    }`;
+    const current = `${new Date().getFullYear()}-${month}-${new Date().getDate()}`;
+    setDate(current);
     apiRequest(`oggi?datGiorno=${current}`).then((res) => {
       let tipi = [];
       res.dati.forEach((dato) => {
@@ -79,22 +73,83 @@ export default function Riepilogo() {
         }}
       >
         <Toolbar />
-        <Typography variant="h4">Resoconto</Typography>
-        <List>
+        <Typography variant="h4">Resoconto {date}</Typography>
+        <List sx={{ marginTop: 4 }}>
           {tipi.map((item, index) => {
             return (
-              <ListItem key={index}>
+              <>
                 <ListItemText>
                   <Typography variant="h5">{item}</Typography>
                 </ListItemText>
                 <List>
                   {news[index].map((item2, index2) => {
-                    let Object = <p>Error</p>;
+                    let Object = <p key={index2}>Error</p>;
+
                     switch (item) {
                       case "Compiti assegnati":
                         Object = (
                           <GenCompiti
-                            item={item2}
+                            item={item2.dati}
+                            index={index2}
+                            key={index2}
+                          />
+                        );
+                        break;
+
+                      case "Argomenti lezione":
+                        Object = (
+                          <GenArgomenti
+                            item={item2.dati}
+                            index={index2}
+                            key={index2}
+                          />
+                        );
+                        break;
+
+                      case "Promemoria":
+                        Object = (
+                          <GenPromemoria
+                            item={item2.dati}
+                            index={index2}
+                            key={index2}
+                          />
+                        );
+                        break;
+
+                      case "Assenze/Ritardi/Permessi":
+                        Object = (
+                          <GenAssenze
+                            item={item2.dati}
+                            index={index2}
+                            key={index2}
+                          />
+                        );
+                        break;
+
+                      case "Voti Giornalieri":
+                        Object = (
+                          <GenVoti
+                            item={item2.dati}
+                            index={index2}
+                            key={index2}
+                          />
+                        );
+                        break;
+
+                      case "Bacheca":
+                        Object = (
+                          <GenBacheca
+                            item={item2.dati}
+                            index={index2}
+                            key={index2}
+                          />
+                        );
+                        break;
+
+                      case "Note Disciplinari":
+                        Object = (
+                          <GenNote
+                            item={item2.dati}
                             index={index2}
                             key={index2}
                           />
@@ -104,10 +159,11 @@ export default function Riepilogo() {
                       default:
                         break;
                     }
-                    return <Object />;
+
+                    return Object;
                   })}
                 </List>
-              </ListItem>
+              </>
             );
           })}
         </List>

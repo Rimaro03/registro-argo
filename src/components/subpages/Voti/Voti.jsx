@@ -20,10 +20,18 @@ import GenVoti from "../../../gen/GenVoti";
 import { red, green } from "@mui/material/colors";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import apiRequest from "../../../api/apiRequest";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 export default function Voti() {
   const [cookies] = useCookies();
   const [voti, setVoti] = useState([]);
+
+  const matches = useMediaQuery("(min-width:930px)");
+
+  let drawerWidth = 300;
+  if (!matches) {
+    drawerWidth = 60;
+  }
 
   useEffect(() => {
     if (!cookies.session) {
@@ -64,8 +72,6 @@ export default function Voti() {
     media = media / votiList.length;
     return media.toFixed(2);
   };
-
-  const drawerWidth = 300;
 
   return (
     <Box sx={{ display: "flex" }}>

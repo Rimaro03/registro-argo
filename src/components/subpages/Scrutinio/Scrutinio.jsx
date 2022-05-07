@@ -29,7 +29,13 @@ export default function Scrutinio() {
   const [scrutini, setScrutini] = useState({});
   const [chartData, setChartData] = useState([]);
 
-  const matches = useMediaQuery("(min-width:1500px)");
+  const matches = useMediaQuery("(min-width:930px)");
+  const matches2 = useMediaQuery("(min-width:1500px)");
+
+  let drawerWidth = 300;
+  if (!matches) {
+    drawerWidth = 60;
+  }
 
   useEffect(() => {
     if (!cookies.session) {
@@ -125,7 +131,7 @@ export default function Scrutinio() {
   };
 
   const loadChart = () => {
-    if (matches) {
+    if (matches2) {
       return (
         <RadarChart
           outerRadius={180}
@@ -164,7 +170,6 @@ export default function Scrutinio() {
     }
   };*/
 
-  const drawerWidth = 300;
   const tableWidth = 750;
 
   return (

@@ -14,12 +14,20 @@ import GenNote from "../../../gen/GenNote";
 import GenPromemoria from "../../../gen/GenPromemoria";
 import GenVoti from "../../../gen/GenVoti";
 import GenBacheca from "../../../gen/GenBacheca";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 export default function Riepilogo() {
   const [cookies, setCookie] = useCookies();
   const [tipi, setTipi] = useState([]);
   const [news, setNews] = useState([]);
   const [date, setDate] = useState("");
+
+  const matches = useMediaQuery("(min-width:930px)");
+
+  let drawerWidth = 300;
+  if (!matches) {
+    drawerWidth = 60;
+  }
 
   useEffect(() => {
     if (!cookies.session) {
@@ -55,8 +63,6 @@ export default function Riepilogo() {
       setNews(news);
     });
   }, []);
-
-  const drawerWidth = 300;
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -111,6 +117,7 @@ export default function Riepilogo() {
                           <GenPromemoria
                             item={item2.dati}
                             index={index2}
+                            matches={matches}
                             key={index2}
                           />
                         );

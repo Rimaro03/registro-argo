@@ -5,10 +5,18 @@ import { useCookies } from "react-cookie";
 import { Box, List, Toolbar, Typography } from "@mui/material";
 import apiRequest from "../../../api/apiRequest";
 import GenNote from "../../../gen/GenNote";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 export default function Note() {
   const [cookies] = useCookies();
   const [note, setNote] = useState([]);
+
+  const matches = useMediaQuery("(min-width:930px)");
+
+  let drawerWidth = 300;
+  if (!matches) {
+    drawerWidth = 60;
+  }
 
   useEffect(() => {
     if (!cookies.session) {
@@ -20,7 +28,6 @@ export default function Note() {
     });
   }, []);
 
-  const drawerWidth = 300;
 
   return (
     <Box sx={{ display: "flex" }}>

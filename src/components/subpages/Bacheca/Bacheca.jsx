@@ -25,6 +25,8 @@ import ArticleIcon from "@mui/icons-material/Article";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AttachEmailIcon from "@mui/icons-material/AttachEmail";
 import apiRequest from "../../../api/apiRequest";
+import useMediaQuery from "@mui/material/useMediaQuery";
+
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -35,6 +37,13 @@ export default function Bacheca() {
   const [bacheca, setBacheca] = useState([]);
   const [open, setOpen] = useState(false);
   const [snack, setSnack] = useState();
+
+  const matches = useMediaQuery("(min-width:930px)");
+
+  let drawerWidth = 300;
+  if (!matches) {
+    drawerWidth = 60;
+  }
 
   useEffect(() => {
     if (!cookies.session) {
@@ -75,8 +84,6 @@ export default function Bacheca() {
 
     handlePresaVisione(comunicazione);
   };
-
-  const drawerWidth = 300;
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -129,6 +136,10 @@ export default function Bacheca() {
                   <AccordionDetails>
                     <List component={"span"}>
                       {item.allegati.map((allegato, index) => {
+                        let allegatiNome = `File ${index}`
+                        if (matches) {
+                          allegatiNome = allegato.desFile
+                        }
                         return (
                           <ListItem key={index} component={"span"}>
                             <ListItemButton
@@ -141,7 +152,7 @@ export default function Bacheca() {
                                   <AttachEmailIcon />
                                 </Avatar>
                               </ListItemIcon>
-                              <ListItemText>{allegato.desFile}</ListItemText>
+                              <ListItemText>{allegatiNome}</ListItemText>
                             </ListItemButton>
                           </ListItem>
                         );

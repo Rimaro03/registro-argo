@@ -7,17 +7,25 @@ import MailIcon from "@mui/icons-material/Mail";
 import Toolbar from "@mui/material/Toolbar";
 import { subPages } from "./menuItems";
 import { List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
-
-const drawerWidth = 300;
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 export default function Menu() {
+
+  const matches = useMediaQuery("(min-width:930px)");
+
+  let drawerWidth = 300;
+  let width = 240;
+  if (!matches) {
+    drawerWidth = 60;
+    width = 50;
+  }
 
   return (
     <>
       <CssBaseline />
       <Drawer
         sx={{
-          width: 240,
+          width: width,
           flexShrink: 0,
           '& .MuiDrawer-paper': {
             width: drawerWidth,
@@ -31,7 +39,7 @@ export default function Menu() {
         <Divider />
         <List>
           {subPages.map((page, index) => (
-            <ListItem button onClick={()=>{window.location.href=`/${page.name.toLocaleLowerCase()}`}} key={index}>
+            <ListItem button onClick={() => { window.location.href = `/${page.name.toLocaleLowerCase()}` }} key={index}>
               <ListItemIcon>
                 {page.icon}
               </ListItemIcon>

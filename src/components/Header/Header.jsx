@@ -10,6 +10,8 @@ import { useCookies } from 'react-cookie';
 import apiRequest from '../../api/apiRequest';
 import { Container, Tooltip, Avatar, MenuItem } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import useMediaQuery from "@mui/material/useMediaQuery";
+
 
 const Header = () => {
     const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -17,6 +19,20 @@ const Header = () => {
     const [cognome, setCognome] = useState("");
     const settings = ["Logout"];
     const [cookies, setCookie] = useCookies();
+
+    const matches = useMediaQuery("(min-width:930px)");
+
+    let box = <></>
+    let drawerWidth = 300;
+    if (!matches) {
+        drawerWidth = 60;
+    }
+    else {
+        box = <Typography variant="h5"
+            component="div" noWrap sx={{ flexGrow: 1 }}>
+            Registro Elettronico
+        </Typography>
+    }
 
     useEffect(() => {
         const scheda = JSON.parse(window.localStorage.getItem("schede"))
@@ -33,64 +49,59 @@ const Header = () => {
     };
 
     const handleLogout = () => {
-        setCookie("token", "", { path: "/" });
+        setCookie("session", "", { path: "/" });
         window.location.href = "/login";
     }
-
-    const drawerWidth = 300;
 
     return (
         <AppBar position="fixed">
             <Toolbar
                 sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px` }}
             >
-            <Container maxWidth="100%" sx={{ margin: 0, width: "100%" }}>
-                <Toolbar disableGutters>
-                    <Typography variant="h5"
-                        component="div" noWrap sx={{ flexGrow: 1 }}>
-                        Registro Elettronico
-                    </Typography>
+                <Container maxWidth="100%" sx={{ margin: 0, width: "100%" }}>
+                    <Toolbar disableGutters>
+                        {box}
 
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Typography variant="h6"
-                            component="div" sx={{ flexGrow: 1 }}>
-                            {`${nome} ${cognome}`}
-                        </Typography>
-                    </Box>
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Typography variant="h6"
+                                component="div" sx={{ flexGrow: 1 }}>
+                                {`${nome} ${cognome}`}
+                            </Typography>
+                        </Box>
 
-                    <Tooltip title="Account" sx={{ ml: '20px' }}>
-                        <IconButton onClick={handleOpenUserMenu}>
-                            <Avatar alt="Mario Rossi">
-                                <AccountCircleIcon />
-                            </Avatar>
-                        </IconButton>
-                    </Tooltip>
+                        <Tooltip title="Account" sx={{ ml: '20px' }}>
+                            <IconButton onClick={handleOpenUserMenu}>
+                                <Avatar alt="Mario Rossi">
+                                    <AccountCircleIcon />
+                                </Avatar>
+                            </IconButton>
+                        </Tooltip>
 
-                    <Menu
-                        sx={{ mt: '45px' }}
-                        id="menu-appbar"
-                        anchorEl={anchorElUser}
-                        anchorOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                        }}
-                        keepMounted
-                        transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                        }}
-                        open={Boolean(anchorElUser)}
-                        onClose={handleCloseUserMenu}
-                    >
-                        {settings.map((setting) => (
-                            <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                <Typography textAlign="center" onClick={handleLogout}>{setting}</Typography>
-                            </MenuItem>
-                        ))}
-                    </Menu>
-                </Toolbar>
-            </Container>
-        </Toolbar>
+                        <Menu
+                            sx={{ mt: '45px' }}
+                            id="menu-appbar"
+                            anchorEl={anchorElUser}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            open={Boolean(anchorElUser)}
+                            onClose={handleCloseUserMenu}
+                        >
+                            {settings.map((setting) => (
+                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                                    <Typography textAlign="center" onClick={handleLogout}>{setting}</Typography>
+                                </MenuItem>
+                            ))}
+                        </Menu>
+                    </Toolbar>
+                </Container>
+            </Toolbar>
         </AppBar >
     );
 };

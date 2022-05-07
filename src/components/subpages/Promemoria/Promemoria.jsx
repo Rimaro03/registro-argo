@@ -13,11 +13,19 @@ import {
 } from "@mui/material";
 import apiRequest from "../../../api/apiRequest";
 import GenPromemoria from "../../../gen/GenPromemoria";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 export default function Promemoria() {
   const [cookies] = useCookies();
   const [checked, setChecked] = useState(true);
   const [promemoria, setPromemoria] = useState([]);
+
+  const matches = useMediaQuery("(min-width:930px)");
+
+  let drawerWidth = 300;
+  if (!matches) {
+    drawerWidth = 60;
+  }
 
   useEffect(() => {
     if (!cookies.session) {
@@ -55,7 +63,6 @@ export default function Promemoria() {
     }
   };
 
-  const drawerWidth = 300;
   const current = new Date();
   let day = current.getDate() + 1;
   let month = current.getMonth() + 1;
@@ -94,11 +101,13 @@ export default function Promemoria() {
         </Box>
         <List>
           {promemoria.map((item, index) => {
+            console.log(matches);
             return (
               <GenPromemoria
                 item={item}
                 index={index}
                 dataOggi={dataOggi}
+                matches={matches}
                 key={index}
               />
             );

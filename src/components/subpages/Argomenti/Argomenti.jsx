@@ -5,10 +5,18 @@ import { useCookies } from "react-cookie";
 import { Box, List, Toolbar, Typography } from "@mui/material";
 import apiRequest from "../../../api/apiRequest";
 import GenArgomenti from "../../../gen/GenArgomenti";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 export default function Argomenti() {
   const [cookies] = useCookies();
   const [argomenti, setArgomenti] = useState([]);
+
+  const matches = useMediaQuery("(min-width:930px)");
+
+  let drawerWidth = 300;
+  if (!matches) {
+    drawerWidth = 60;
+  }
 
   useEffect(() => {
     if (!cookies.session) {
@@ -40,8 +48,6 @@ export default function Argomenti() {
     });
     return newArgomenti;
   };
-
-  const drawerWidth = 300;
 
   return (
     <Box sx={{ display: "flex" }}>

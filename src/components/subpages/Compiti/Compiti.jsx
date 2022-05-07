@@ -13,11 +13,19 @@ import {
 } from "@mui/material";
 import apiRequest from "../../../api/apiRequest";
 import GenCompiti from "../../../gen/GenCompiti";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 export default function Compiti() {
   const [cookies] = useCookies();
   const [compiti, setCompiti] = useState([]);
   const [checked, setChecked] = useState(true);
+
+  const matches = useMediaQuery("(min-width:930px)");
+
+  let drawerWidth = 300;
+  if (!matches) {
+    drawerWidth = 60;
+  }
 
   useEffect(() => {
     if (!cookies.session) {
@@ -55,7 +63,6 @@ export default function Compiti() {
     }
   };
 
-  const drawerWidth = 300;
   const current = new Date();
   let day = current.getDate() + 1;
   let month = current.getMonth() + 1;

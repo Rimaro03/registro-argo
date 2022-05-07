@@ -24,6 +24,21 @@ export default function GenPromemoria(props) {
     }
   }
 
+  let content = props.item.desAnnotazioni
+  if (!props.matches) {
+    const domains = [".it", ".com", ".org", ".cloud"]
+    if (content.length > 105 && content.startsWith("https://")) {
+      let domainFound = ".com"
+      domains.forEach(domain => {
+        if (content.indexOf(domain) > 0) {
+          domainFound = domain
+        }
+      })
+      content = (<><a href={content}>Collegamento esterno</a> <br /> <p>{content.slice(0, content.indexOf(domainFound) + 5)}...</p> </>)
+    }
+  }
+
+
   return (
     <ListItem
       key={props.index}
@@ -57,12 +72,13 @@ export default function GenPromemoria(props) {
               variant="body2"
               color="text.primary"
             >
-              {props.item.desAnnotazioni}
+              {content}
             </Typography>
             <br />
             {props.item.datGiorno}
           </React.Fragment>
         }
+        sx={{ overflow: "hidden" }}
       />
     </ListItem>
   );

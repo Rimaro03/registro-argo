@@ -40,10 +40,6 @@ export const subPages = [
     icon: <NotificationsIcon />,
   },
   {
-    name: "Orario",
-    icon: <AccessTimeIcon />,
-  },
-  {
     name: "Bacheca",
     icon: <PushPinIcon />,
   },

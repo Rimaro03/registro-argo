@@ -10,6 +10,7 @@ import Argomenti from "./components/subpages/Argomenti/Argomenti";
 import Promemoria from "./components/subpages/Promemoria/Promemoria";
 import Bacheca from "./components/subpages/Bacheca/Bacheca";
 import NoMatch from "./components/NoMatch/NoMatch";
+import Menu from "./components/Menu/Menu";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 

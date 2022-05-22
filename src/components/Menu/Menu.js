@@ -8,9 +8,9 @@ import Toolbar from "@mui/material/Toolbar";
 import { subPages } from "./menuItems";
 import { List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { Link } from "react-router-dom";
 
 export default function Menu() {
-
   const matches = useMediaQuery("(min-width:930px)");
 
   let drawerWidth = 300;
@@ -27,9 +27,9 @@ export default function Menu() {
         sx={{
           width: width,
           flexShrink: 0,
-          '& .MuiDrawer-paper': {
+          "& .MuiDrawer-paper": {
             width: drawerWidth,
-            boxSizing: 'border-box',
+            boxSizing: "border-box",
           },
         }}
         variant="permanent"
@@ -38,14 +38,20 @@ export default function Menu() {
         <Toolbar />
         <Divider />
         <List>
-          {subPages.map((page, index) => (
-            <ListItem button onClick={() => { window.location.href = `/${page.name.toLocaleLowerCase()}` }} key={index}>
-              <ListItemIcon>
-                {page.icon}
-              </ListItemIcon>
-              <ListItemText primary={page.name} />
-            </ListItem>
-          ))}
+          {subPages.map((page, index) => {
+            let pageName = `/${page.name.toLocaleLowerCase()}`;
+            return (
+              <Link
+                style={{ textDecoration: "none", color: "white" }}
+                to={pageName}
+              >
+                <ListItem button key={index}>
+                  <ListItemIcon>{page.icon}</ListItemIcon>
+                  <ListItemText primary={page.name} />
+                </ListItem>
+              </Link>
+            );
+          })}
         </List>
       </Drawer>
     </>

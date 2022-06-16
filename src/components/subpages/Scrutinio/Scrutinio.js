@@ -141,32 +141,34 @@ export default function Scrutinio() {
   const colonne = ["materia", "voto", "assenze"];
 
   const tabellaPrimoScrutinio = () => {
-    console.log(datiGrafPrimoScrutinio);
     return (
-      <TableContainer component={Paper} sx={{ marginTop: 2 }}>
-        <Table sx={{ minwidth: 680 }} aria-label="Voti">
-          <TableHead>
-            <TableRow>
-              {colonne.map((colonna, index) => (
-                <TableCell key={index} align="left">
-                  <strong>{colonna}</strong>
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {datiPrimoScrutinio.map((row, index) => (
-              <TableRow key={index}>
-                <TableCell component="th" scope="row">
-                  {row.materia}
-                </TableCell>
-                <TableCell align="left">{row.voto}</TableCell>
-                <TableCell align="left">{row.assenze}</TableCell>
+      <Box>
+        <Typography variant="h6">Primo periodo</Typography>
+        <TableContainer component={Paper} sx={{ marginTop: 2 }}>
+          <Table sx={{ minwidth: 680 }} aria-label="Voti">
+            <TableHead>
+              <TableRow>
+                {colonne.map((colonna, index) => (
+                  <TableCell key={index} align="left">
+                    <strong>{colonna}</strong>
+                  </TableCell>
+                ))}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {datiPrimoScrutinio.map((row, index) => (
+                <TableRow key={index}>
+                  <TableCell component="th" scope="row">
+                    {row.materia}
+                  </TableCell>
+                  <TableCell align="left">{row.voto}</TableCell>
+                  <TableCell align="left">{row.assenze}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
     );
   };
   const graficoPrimoScrutinio = () => {
@@ -194,30 +196,33 @@ export default function Scrutinio() {
 
   const tabellaSecondoScrutinio = () => {
     return (
-      <TableContainer component={Paper} sx={{ marginTop: 2 }}>
-        <Table sx={{ minwidth: 680 }} aria-label="Voti">
-          <TableHead>
-            <TableRow>
-              {colonne.map((colonna, index) => (
-                <TableCell key={index} align="left">
-                  <strong>{colonna}</strong>
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {datiSecondoScrutinio.map((row, index) => (
-              <TableRow key={index}>
-                <TableCell component="th" scope="row">
-                  {row.materia}
-                </TableCell>
-                <TableCell align="left">{row.voto}</TableCell>
-                <TableCell align="left">{row.assenze}</TableCell>
+      <Box>
+        <Typography variant="h6">Scrutinio finale</Typography>
+        <TableContainer component={Paper} sx={{ marginTop: 2 }}>
+          <Table sx={{ minwidth: 680 }} aria-label="Voti">
+            <TableHead>
+              <TableRow>
+                {colonne.map((colonna, index) => (
+                  <TableCell key={index} align="left">
+                    <strong>{colonna}</strong>
+                  </TableCell>
+                ))}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {datiSecondoScrutinio.map((row, index) => (
+                <TableRow key={index}>
+                  <TableCell component="th" scope="row">
+                    {row.materia}
+                  </TableCell>
+                  <TableCell align="left">{row.voto}</TableCell>
+                  <TableCell align="left">{row.assenze}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
     );
   };
   const graficoSecondoScrutinio = () => {
@@ -245,30 +250,57 @@ export default function Scrutinio() {
 
   const pagination = () => {
     const elements = checkConditionalRendering();
-    return (
-      <Box sx={{ display: "flex", flexDirection: "column" }}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-around",
-          }}
-        >
-          <Box sx={{ width: "40%" }}>{tabellaPrimoScrutinio()}</Box>
-          <Box sx={{ width: "40%" }}>{elements[0]}</Box>
+    if (matches2) {
+      return (
+        <Box sx={{ display: "flex", flexDirection: "column" }}>
+          <Box>
+            <Typography variant="h4">Scrutini</Typography>
+            <FormGroup sx={{ alignContent: "flex-end" }}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={checked}
+                    onChange={handleChange}
+                    inputProps={{ "aria-label": "controlled" }}
+                  />
+                }
+                label="Confronta periodi"
+              />
+            </FormGroup>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-around",
+            }}
+          >
+            <Box sx={{ width: "45%" }}>{tabellaPrimoScrutinio()}</Box>
+            <Box sx={{ width: "45%" }}>{elements[0]}</Box>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-around",
+              pt: 10,
+            }}
+          >
+            <Box sx={{ width: "45%" }}>{elements[1]}</Box>
+            <Box sx={{ width: "45%", alignSelf: "flex-start" }}>
+              {graficoSecondoScrutinio()}
+            </Box>
+          </Box>
         </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-around",
-          }}
-        >
-          <Box sx={{ width: "40%" }}>{elements[1]}</Box>
-          <Box sx={{ width: "40%" }}>{graficoSecondoScrutinio()}</Box>
+      );
+    } else {
+      return (
+        <Box sx={{ display: "flex", flexDirection: "column" }}>
+          <Box>{tabellaPrimoScrutinio()}</Box>
+          <Box sx={{ pt: 10 }}>{tabellaSecondoScrutinio()}</Box>
         </Box>
-      </Box>
-    );
+      );
+    }
   };
 
   const checkConditionalRendering = () => {
@@ -298,21 +330,6 @@ export default function Scrutinio() {
           mt: 10,
         }}
       >
-        <Box>
-          <Typography variant="h4">Scrutini</Typography>
-          <FormGroup sx={{ alignContent: "flex-end" }}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={checked}
-                  onChange={handleChange}
-                  inputProps={{ "aria-label": "controlled" }}
-                />
-              }
-              label="Confronta periodi"
-            />
-          </FormGroup>
-        </Box>
         {pagination()}
       </Box>
     </Box>

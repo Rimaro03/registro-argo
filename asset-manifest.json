@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/registro-argo/static/js/main.ce9a8de0.js",
+    "main.js": "/registro-argo/static/js/main.77be4673.js",
     "index.html": "/registro-argo/index.html",
-    "main.ce9a8de0.js.map": "/registro-argo/static/js/main.ce9a8de0.js.map"
+    "main.77be4673.js.map": "/registro-argo/static/js/main.77be4673.js.map"
   },
   "entrypoints": [
-    "static/js/main.ce9a8de0.js"
+    "static/js/main.77be4673.js"
   ]
 }

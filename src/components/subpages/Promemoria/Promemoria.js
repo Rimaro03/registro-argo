@@ -14,11 +14,13 @@ import {
 import apiRequest from "../../../api/apiRequest";
 import GenPromemoria from "../../../gen/GenPromemoria";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { useNavigate } from "react-router-dom";
 
 export default function Promemoria() {
   const [cookies] = useCookies();
   const [checked, setChecked] = useState(true);
   const [promemoria, setPromemoria] = useState([]);
+  const navigate = useNavigate();
 
   const matches = useMediaQuery("(min-width:930px)");
 
@@ -29,7 +31,7 @@ export default function Promemoria() {
 
   useEffect(() => {
     if (!cookies.session) {
-      window.location.href = "/login";
+      navigate("/login");
     }
 
     apiRequest("promemoria").then((res) => {

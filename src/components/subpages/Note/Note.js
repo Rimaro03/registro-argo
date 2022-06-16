@@ -6,10 +6,12 @@ import { Box, List, Toolbar, Typography } from "@mui/material";
 import apiRequest from "../../../api/apiRequest";
 import GenNote from "../../../gen/GenNote";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { useNavigate } from "react-router-dom";
 
 export default function Note() {
   const [cookies] = useCookies();
   const [note, setNote] = useState([]);
+  const navigate = useNavigate();
 
   const matches = useMediaQuery("(min-width:930px)");
 
@@ -20,14 +22,13 @@ export default function Note() {
 
   useEffect(() => {
     if (!cookies.session) {
-      window.location.href = "/login";
+      navigate("/login");
     }
 
     apiRequest("notedisciplinari").then((res) => {
       setNote(res.dati);
     });
   }, []);
-
 
   return (
     <Box sx={{ display: "flex" }}>

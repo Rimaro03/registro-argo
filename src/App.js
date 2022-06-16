@@ -9,9 +9,7 @@ import Compiti from "./components/subpages/Compiti/Compiti";
 import Argomenti from "./components/subpages/Argomenti/Argomenti";
 import Promemoria from "./components/subpages/Promemoria/Promemoria";
 import Bacheca from "./components/subpages/Bacheca/Bacheca";
-import NoMatch from "./components/NoMatch/NoMatch";
-import Menu from "./components/Menu/Menu";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 function App() {
@@ -28,7 +26,7 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
@@ -41,9 +39,8 @@ function App() {
           <Route path="/promemoria" element={<Promemoria />} />
           <Route path="/bacheca" element={<Bacheca />} />
           <Route path="/scrutinio" element={<Scrutinio />} />
-          <Route path="*" element={<NoMatch />} />
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </ThemeProvider>
   );
 }

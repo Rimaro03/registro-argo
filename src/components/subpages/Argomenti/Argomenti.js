@@ -6,10 +6,12 @@ import { Box, List, Toolbar, Typography } from "@mui/material";
 import apiRequest from "../../../api/apiRequest";
 import GenArgomenti from "../../../gen/GenArgomenti";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { useNavigate } from "react-router-dom";
 
 export default function Argomenti() {
   const [cookies] = useCookies();
   const [argomenti, setArgomenti] = useState([]);
+  const navigate = useNavigate();
 
   const matches = useMediaQuery("(min-width:930px)");
 
@@ -20,7 +22,7 @@ export default function Argomenti() {
 
   useEffect(() => {
     if (!cookies.session) {
-      window.location.href = "/login";
+      navigate("/login");
     }
 
     apiRequest("argomenti").then((res) => {

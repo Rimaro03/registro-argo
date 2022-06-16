@@ -26,7 +26,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AttachEmailIcon from "@mui/icons-material/AttachEmail";
 import apiRequest from "../../../api/apiRequest";
 import useMediaQuery from "@mui/material/useMediaQuery";
-
+import { useNavigate } from "react-router-dom";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -37,6 +37,7 @@ export default function Bacheca() {
   const [bacheca, setBacheca] = useState([]);
   const [open, setOpen] = useState(false);
   const [snack, setSnack] = useState();
+  const navigate = useNavigate();
 
   const matches = useMediaQuery("(min-width:930px)");
 
@@ -47,7 +48,7 @@ export default function Bacheca() {
 
   useEffect(() => {
     if (!cookies.session) {
-      window.location.href = "/login";
+      navigate("/login");
     }
 
     apiRequest("bachecanuova").then((res) => {
@@ -136,9 +137,9 @@ export default function Bacheca() {
                   <AccordionDetails>
                     <List component={"span"}>
                       {item.allegati.map((allegato, index) => {
-                        let allegatiNome = `File ${index}`
+                        let allegatiNome = `File ${index}`;
                         if (matches) {
-                          allegatiNome = allegato.desFile
+                          allegatiNome = allegato.desFile;
                         }
                         return (
                           <ListItem key={index} component={"span"}>

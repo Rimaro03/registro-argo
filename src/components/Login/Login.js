@@ -13,19 +13,20 @@ import { useCookies } from "react-cookie";
 import getToken from "../../api/getToken";
 import { nanoid } from "nanoid";
 import getAlunnoData from "../../api/getAlunnoData";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export default function SignIn() {
   const [cookies, setCookie] = useCookies();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [codScuola, setCodScuola] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (cookies.session) {
-      window.location.href = "/riepilogo";
+      navigate("/riepilogo");
     }
   }, []);
-
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -39,12 +40,12 @@ export default function SignIn() {
       setCookie("session", nanoid(), { path: "/" });
 
       window.localStorage.setItem("token", token);
-      
+
       await getAlunnoData(token).then((res) => {
-        window.localStorage.setItem("schede", JSON.stringify(res))
+        window.localStorage.setItem("schede", JSON.stringify(res));
       });
 
-      window.location.href = "/riepilogo";
+      navigate("/riepilogo");
     }
   };
 

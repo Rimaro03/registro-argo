@@ -25,6 +25,7 @@ import {
 } from "recharts";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import apiRequest from "../../../api/apiRequest";
+import { useNavigate } from "react-router-dom";
 
 export default function Scrutinio() {
   const [cookies] = useCookies();
@@ -34,6 +35,7 @@ export default function Scrutinio() {
   const [datiGrafPrimoScrutinio, setDatiGrafPrimoScrutinio] = useState([]);
   const [datiGrafSecondoScrutinio, setDatiGrafSecondoScrutinio] = useState([]);
   const [checked, setChecked] = useState(false);
+  const navigate = useNavigate();
 
   const matches = useMediaQuery("(min-width:930px)");
   const matches2 = useMediaQuery("(min-width:1500px)");
@@ -47,7 +49,7 @@ export default function Scrutinio() {
 
   useEffect(() => {
     if (!cookies.session) {
-      window.location.href = "/login";
+      navigate("/login");
     }
 
     //mi riprendo i periodi (quadrimestre)

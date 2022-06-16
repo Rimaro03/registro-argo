@@ -21,10 +21,12 @@ import { red, green } from "@mui/material/colors";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import apiRequest from "../../../api/apiRequest";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { useNavigate } from "react-router-dom";
 
 export default function Voti() {
   const [cookies] = useCookies();
   const [voti, setVoti] = useState([]);
+  const navigate = useNavigate();
 
   const matches = useMediaQuery("(min-width:930px)");
 
@@ -35,7 +37,7 @@ export default function Voti() {
 
   useEffect(() => {
     if (!cookies.session) {
-      window.location.href = "/login";
+      navigate("/login");
     }
 
     apiRequest("votigiornalieri").then((res) => {

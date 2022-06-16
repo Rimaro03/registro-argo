@@ -15,12 +15,14 @@ import GenPromemoria from "../../../gen/GenPromemoria";
 import GenVoti from "../../../gen/GenVoti";
 import GenBacheca from "../../../gen/GenBacheca";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { useNavigate } from "react-router-dom";
 
 export default function Riepilogo() {
   const [cookies, setCookie] = useCookies();
   const [tipi, setTipi] = useState([]);
   const [news, setNews] = useState([]);
   const [date, setDate] = useState("");
+  const navigate = useNavigate();
 
   const matches = useMediaQuery("(min-width:930px)");
 
@@ -31,7 +33,7 @@ export default function Riepilogo() {
 
   useEffect(() => {
     if (!cookies.session) {
-      window.location.href = "/login";
+      navigate("/login");
     }
 
     let month = new Date().getMonth() + 1;

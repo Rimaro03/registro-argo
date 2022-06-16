@@ -18,48 +18,51 @@ import {
 import apiRequest from "../../../api/apiRequest";
 import GenAssenze from "../../../gen/GenAssenze";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { useNavigate } from "react-router-dom";
 
 //TODO: RIEPILOGO ASSENZE
 export default function Assenze() {
   const [cookies] = useCookies();
   const [assenze, setAssenze] = useState([]);
   const [chartData, setChartData] = useState([]);
+  const navigate = useNavigate();
 
   const matches = useMediaQuery("(min-width:930px)");
 
   let drawerWidth = 300;
   let tableWidth = 400;
-  let table = (<TableContainer
-    component={Paper}
-    sx={{ width: tableWidth, height: 150, marginTop: 18, marginRight: 3 }}
-  >
-    <Table aria-label="simple table">
-      <TableHead>
-        <TableRow>
-          <TableCell>Assenze</TableCell>
-          <TableCell align="right">Ingressi</TableCell>
-          <TableCell align="right">Uscite</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        <TableRow key={chartData.assenze}>
-          <TableCell align="center">{chartData.assenze}</TableCell>
-          <TableCell align="center">{chartData.ingressi}</TableCell>
-          <TableCell align="center">{chartData.uscite}</TableCell>
-        </TableRow>
-      </TableBody>
-    </Table>
-  </TableContainer>
-  )
+  let table = (
+    <TableContainer
+      component={Paper}
+      sx={{ width: tableWidth, height: 150, marginTop: 18, marginRight: 3 }}
+    >
+      <Table aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell>Assenze</TableCell>
+            <TableCell align="right">Ingressi</TableCell>
+            <TableCell align="right">Uscite</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          <TableRow key={chartData.assenze}>
+            <TableCell align="center">{chartData.assenze}</TableCell>
+            <TableCell align="center">{chartData.ingressi}</TableCell>
+            <TableCell align="center">{chartData.uscite}</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
   if (!matches) {
     drawerWidth = 60;
-    table = <></>
+    table = <></>;
     tableWidth = 0;
   }
 
   useEffect(() => {
     if (!cookies.session) {
-      window.location.href = "/login";
+      navigate("/login");
     }
 
     apiRequest("assenze").then((res) => {

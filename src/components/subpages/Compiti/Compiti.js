@@ -14,11 +14,13 @@ import {
 import apiRequest from "../../../api/apiRequest";
 import GenCompiti from "../../../gen/GenCompiti";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { useNavigate } from "react-router-dom";
 
 export default function Compiti() {
   const [cookies] = useCookies();
   const [compiti, setCompiti] = useState([]);
   const [checked, setChecked] = useState(true);
+  const navigate = useNavigate();
 
   const matches = useMediaQuery("(min-width:930px)");
 
@@ -29,7 +31,7 @@ export default function Compiti() {
 
   useEffect(() => {
     if (!cookies.session) {
-      window.location.href = "/login";
+      navigate("/login");
     }
 
     apiRequest("compiti").then((res) => {

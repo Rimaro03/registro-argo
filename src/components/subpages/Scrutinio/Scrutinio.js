@@ -12,6 +12,9 @@ import {
   TableRow,
   TableCell,
   TableBody,
+  FormControlLabel,
+  FormGroup,
+  Switch,
 } from "@mui/material";
 import {
   RadarChart,
@@ -25,12 +28,17 @@ import apiRequest from "../../../api/apiRequest";
 
 export default function Scrutinio() {
   const [cookies] = useCookies();
-  const [scrutinio, setScrutinio] = useState([]);
-  const [scrutini, setScrutini] = useState({});
-  const [chartData, setChartData] = useState([]);
+  const [periodi, setPeriodi] = useState({});
+  const [datiPrimoScrutinio, setDatiPrimoScrutinio] = useState([]);
+  const [datiSecondoScrutinio, setDatiSecondoScrutinio] = useState([]);
+  const [datiGrafPrimoScrutinio, setDatiGrafPrimoScrutinio] = useState([]);
+  const [datiGrafSecondoScrutinio, setDatiGrafSecondoScrutinio] = useState([]);
+  const [checked, setChecked] = useState(false);
 
   const matches = useMediaQuery("(min-width:930px)");
   const matches2 = useMediaQuery("(min-width:1500px)");
+
+  const tableWidth = 750;
 
   let drawerWidth = 300;
   if (!matches) {
@@ -42,32 +50,7 @@ export default function Scrutinio() {
       window.location.href = "/login";
     }
 
-    apiRequest("votiscrutinio").then((res) => {
-      let scrutinioArray = [];
-      let id = 0;
-      res.forEach((dato) => {
-        scrutinioArray.push({
-          id: id,
-          Materia: dato.desMateria,
-          Voto: dato.votoOrale.codVoto,
-          Assenze: dato.assenze,
-        });
-        id++;
-      });
-
-      setScrutinio(scrutinioArray);
-      let datas = scrutinioArray.map((item) => item);
-      datas.splice(
-        datas.findIndex((item) => item.Materia === "Religione Cattolica"),
-        1
-      );
-      datas.splice(
-        datas.findIndex((item) => item.Materia === "Comportamento"),
-        1
-      );
-      setChartData(datas);
-    });
-
+    //mi riprendo i periodi (quadrimestre)
     apiRequest("periodiclasse").then((res) => {
       let periodi = {
         primo: false,
@@ -81,96 +64,224 @@ export default function Scrutinio() {
         periodi.secondo = true;
       }
 
-      setScrutini(periodi);
+      setPeriodi(periodi);
+
+      //mi riprendo i dati dello scrutinio
+      apiRequest("votiscrutinio").then((res) => {
+        let primoScrutinioArray = [];
+        let secondoScrutinioArray = [];
+
+        res.forEach((dato) => {
+          primoScrutinioArray.push({
+            materia: dato.desMateria,
+            voto: dato.votoOrale.codVoto,
+            assenze: dato.assenze,
+          });
+        });
+
+        //controllo se c'è anche il secondo assieme, se c'è mi riprendo i suoi valori
+        if (periodi.secondo) {
+          secondoScrutinioArray = primoScrutinioArray.slice(
+            primoScrutinioArray.length / 2,
+            primoScrutinioArray.length
+          );
+
+          primoScrutinioArray.splice(
+            primoScrutinioArray.length / 2,
+            primoScrutinioArray.length
+          );
+        }
+
+        //memorizzo i dati del/degli scrutini/o
+        setDatiPrimoScrutinio(primoScrutinioArray);
+        setDatiSecondoScrutinio(secondoScrutinioArray);
+
+        //memorizzo i dati per i grafici
+        //primo scrutinio
+        let datasPrimo = primoScrutinioArray.map((item) => item);
+        datasPrimo.splice(
+          datasPrimo.findIndex(
+            (item) => item.Materia === "Religione Cattolica"
+          ),
+          1
+        );
+        datasPrimo.splice(
+          datasPrimo.findIndex((item) => item.Materia === "Comportamento"),
+          1
+        );
+        setDatiGrafPrimoScrutinio(datasPrimo);
+
+        //secondo scrutinio
+        let datasSecondo = secondoScrutinioArray.map((item) => item);
+        datasSecondo.splice(
+          datasSecondo.findIndex(
+            (item) => item.Materia === "Religione Cattolica"
+          ),
+          1
+        );
+        datasSecondo.splice(
+          datasSecondo.findIndex((item) => item.Materia === "Comportamento"),
+          1
+        );
+        setDatiGrafSecondoScrutinio(datasSecondo);
+      });
     });
   }, []);
 
+  const handleChange = (event) => {
+    const value = event.target.checked;
+    setChecked(value);
+  };
+
+  //crea i dati per le tabelle
   const createData = (materia, voto, assenze) => {
     return { materia, voto, assenze };
   };
 
-  let datiPrimoScrutinio = [];
-  scrutinio.forEach((voto) => {
-    datiPrimoScrutinio.push(createData(voto.Materia, voto.Voto, voto.Assenze));
-  });
+  const colonne = ["materia", "voto", "assenze"];
 
-  const colonne = ["Materia", "Voto", "Assenze"];
-
-  const loadPrimoScrutinio = () => {
-    if (scrutini.primo) {
-      return (
-        <>
-          <Typography variant="h4">Primo scrutinio</Typography>
-          <TableContainer component={Paper} sx={{ marginTop: 2 }}>
-            <Table sx={{ minwidth: 680 }} aria-label="Voti">
-              <TableHead>
-                <TableRow>
-                  {colonne.map((colonna, index) => (
-                    <TableCell key={index} align="left">
-                      <strong>{colonna}</strong>
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {datiPrimoScrutinio.map((row, index) => (
-                  <TableRow key={index}>
-                    <TableCell component="th" scope="row">
-                      {row.materia}
-                    </TableCell>
-                    <TableCell align="left">{row.voto}</TableCell>
-                    <TableCell align="left">{row.assenze}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </>
-      );
-    }
+  const tabellaPrimoScrutinio = () => {
+    console.log(datiGrafPrimoScrutinio);
+    return (
+      <TableContainer component={Paper} sx={{ marginTop: 2 }}>
+        <Table sx={{ minwidth: 680 }} aria-label="Voti">
+          <TableHead>
+            <TableRow>
+              {colonne.map((colonna, index) => (
+                <TableCell key={index} align="left">
+                  <strong>{colonna}</strong>
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {datiPrimoScrutinio.map((row, index) => (
+              <TableRow key={index}>
+                <TableCell component="th" scope="row">
+                  {row.materia}
+                </TableCell>
+                <TableCell align="left">{row.voto}</TableCell>
+                <TableCell align="left">{row.assenze}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    );
+  };
+  const graficoPrimoScrutinio = () => {
+    return (
+      <RadarChart
+        outerRadius={180}
+        width={tableWidth}
+        height={750}
+        data={datiGrafPrimoScrutinio}
+        sx={{}}
+      >
+        <PolarGrid />
+        <PolarAngleAxis dataKey="materia" stroke="white" />
+        <PolarRadiusAxis angle={54} domain={[0, 10]} display="none" />
+        <Radar
+          name="Alunno"
+          dataKey="voto"
+          stroke="#8884d8"
+          fill="#8884d8"
+          fillOpacity={0.6}
+        />
+      </RadarChart>
+    );
   };
 
-  const loadChart = () => {
-    if (matches2) {
-      return (
-        <RadarChart
-          outerRadius={180}
-          width={tableWidth}
-          height={750}
-          data={chartData}
-          sx={{}}
+  const tabellaSecondoScrutinio = () => {
+    return (
+      <TableContainer component={Paper} sx={{ marginTop: 2 }}>
+        <Table sx={{ minwidth: 680 }} aria-label="Voti">
+          <TableHead>
+            <TableRow>
+              {colonne.map((colonna, index) => (
+                <TableCell key={index} align="left">
+                  <strong>{colonna}</strong>
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {datiSecondoScrutinio.map((row, index) => (
+              <TableRow key={index}>
+                <TableCell component="th" scope="row">
+                  {row.materia}
+                </TableCell>
+                <TableCell align="left">{row.voto}</TableCell>
+                <TableCell align="left">{row.assenze}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    );
+  };
+  const graficoSecondoScrutinio = () => {
+    return (
+      <RadarChart
+        outerRadius={180}
+        width={tableWidth}
+        height={750}
+        data={datiGrafSecondoScrutinio}
+        sx={{}}
+      >
+        <PolarGrid />
+        <PolarAngleAxis dataKey="materia" stroke="white" />
+        <PolarRadiusAxis angle={54} domain={[0, 10]} display="none" />
+        <Radar
+          name="Alunno"
+          dataKey="voto"
+          stroke="#8884d8"
+          fill="#8884d8"
+          fillOpacity={0.6}
+        />
+      </RadarChart>
+    );
+  };
+
+  const pagination = () => {
+    const elements = checkConditionalRendering();
+    return (
+      <Box sx={{ display: "flex", flexDirection: "column" }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-around",
+          }}
         >
-          <PolarGrid />
-          <PolarAngleAxis dataKey="Materia" stroke="white" />
-          <PolarRadiusAxis angle={54} domain={[0, 10]} display="none" />
-          <Radar
-            name="Alunno"
-            dataKey="Voto"
-            stroke="#8884d8"
-            fill="#8884d8"
-            fillOpacity={0.6}
-          />
-        </RadarChart>
-      );
-    }
+          <Box sx={{ width: "40%" }}>{tabellaPrimoScrutinio()}</Box>
+          <Box sx={{ width: "40%" }}>{elements[0]}</Box>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-around",
+          }}
+        >
+          <Box sx={{ width: "40%" }}>{elements[1]}</Box>
+          <Box sx={{ width: "40%" }}>{graficoSecondoScrutinio()}</Box>
+        </Box>
+      </Box>
+    );
   };
 
-  /*const loadSecondoScrutinio = () => {
-    if (scrutini.secondo) {
-      return (
-        <>
-          <Typography variant="h4" sx={{ marginTop: 10 }}>
-            Scrutinio Finale
-          </Typography>
-          <div style={{ height: 685 }}>
-            <DataGrid rows={scrutinio} columns={columns} hideFooter={true} />
-          </div>
-        </>
-      );
+  const checkConditionalRendering = () => {
+    let elements = [<></>, <></>];
+    if (checked) {
+      elements[0] = tabellaSecondoScrutinio();
+      elements[1] = graficoPrimoScrutinio();
+    } else {
+      elements[0] = graficoPrimoScrutinio();
+      elements[1] = tabellaSecondoScrutinio();
     }
-  };*/
-
-  const tableWidth = 750;
+    return elements;
+  };
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -187,9 +298,23 @@ export default function Scrutinio() {
           mt: 10,
         }}
       >
-        {loadPrimoScrutinio()}
+        <Box>
+          <Typography variant="h4">Scrutini</Typography>
+          <FormGroup sx={{ alignContent: "flex-end" }}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={checked}
+                  onChange={handleChange}
+                  inputProps={{ "aria-label": "controlled" }}
+                />
+              }
+              label="Confronta periodi"
+            />
+          </FormGroup>
+        </Box>
+        {pagination()}
       </Box>
-      {loadChart()}
     </Box>
   );
 }
